@@ -1,46 +1,163 @@
 .container {
-  color: white;
 }
 
 #gameplay-title {
-  background-color: blue;
   height: 60px;
   border: solid 1px black;
+  text-align: center;
+  font-size: xx-large;
+  margin-top: 50px;
 }
 
 #gameplay-scoreboard {
-  background-color: green;
-  height: 60px;
-  border: solid 1px black;
+  height: 70px;
+  padding-left: 60px;
+}
+
+table#gameplay-scoreboard-table {
+  table-layout: fixed;
+}
+
+th.gameplay-scoreboard-team-names  {
+  width: 160px;
+  border: solid black 1px;
+}
+
+#gameplay-scoreboard td.gameplay-scoreboard-team-names  {
+  width: 160px;
+  border: solid black 1px;
+}
+
+#gameplay-scoreboard th {
+  width: 25px;
+  text-align: center;
+  border: solid black 1px;
+}
+
+#gameplay-scoreboard td {
+  width: 30px;
+  text-align: center;
+  border: solid black 1px;
+}
+
+@mixin game-play-height {
+  height: 550px;
 }
 
 #gameplay-away-team {
-  background-color: yellow;
-  color: black;
-  height: 60px;
   border: solid 1px black;
+  padding: 8px;
+  @include game-play-height;
 }
 
 #gameplay-baseball-field {
-  background-color: red;
-  height: 60px;
   border: solid 1px black;
+  margin-right: 5px;
+  margin-left: 5px;
+  margin-bottom: 0px;
+  @include game-play-height;
+}
+
+#baseball-field {
+  position: absolute;
+  left: 93px;
+  top: 110px;
+}
+
+#baseball-field-diamond {
+  width: 0;
+  height: 0;
+  border: 200px solid transparent;
+  border-bottom-color: green;
+  position: relative; top: -200px;
+}
+
+#baseball-field-diamond:after {
+  content: '';
+  position: absolute;
+  left: -200px;
+  top: 200px;
+  width: 0;
+  height: 0;
+  border: 200px solid transparent;
+  border-top-color: green;
+}
+
+@mixin baseball-field-base {
+  width: 20px;
+  height: 10px;
+  background: white;
+  border: white solid 1px;
+  position: absolute;
+}
+
+#baseball-field-home-base {
+  @include baseball-field-base;
+  top: 110px;
+  left: 100px;
+}
+
+#baseball-field-first-base {
+  @include baseball-field-base;
+  top: 130px;
+  left: 100px;
+}
+
+#baseball-field-second-base {
+  @include baseball-field-base;
+  top: 150px;
+  left: 100px;
+}
+
+#baseball-field-base-runner {
+  width: 20px;
+  height: 20px;
+  background: blue;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  position: absolute;
+  top: 100px;
+  left: 100px;
+  z-index: 1;
+}
+
+#baseball-field-third-base {
+  @include baseball-field-base;
+  top: 170px;
+  left: 100px;
 }
 
 #gameplay-home-team {
-  background-color: purple;
-  height: 60px;
   border: solid 1px black;
+  padding: 8px;
+  @include game-play-height;
 }
 
 #gameplay-at-bat {
-  background-color: orange;
-  height: 60px;
+  height: 50px;
   border: solid 1px black;
+  padding-top: 4px;
+}
+
+#gameplay-at-bat-balls {
+  float: left;
+  margin-right: 22px;
+}
+
+#gameplay-at-bat-strikes {
+  float: left;
+  margin-right: 10px;
+}
+
+#gameplay-at-bat-ball-indicators {
+}
+
+#gameplay-at-bat-strike-indicators {
 }
 
 #gameplay-game-report {
-  background-color: grey;
-  height: 60px;
+  height: 500px;
   border: solid 1px black;
+  overflow: scroll;
 }
