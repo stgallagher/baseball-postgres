@@ -79,7 +79,6 @@ class @Gameplay
     contact > CONTACT_GROUND_BALL_OUT_RANGE[0] && contact <= CONTACT_GROUND_BALL_OUT_RANGE[1]
 
   # At-bat
-
   atbat: ->
     balls = 0
     strikes = 0
@@ -101,16 +100,20 @@ class @Gameplay
         result = "strikeout"
         atbat = false
       if contact is "foul"
-        strikes = @strikeReceived(contact)
+        strikes = @strikeReceived(contact, strikes)
       if contact? and contact isnt "foul"
         result = contact
         atbat = false
+
+    return result
 
   ballReceived: (balls) ->
     @displayAddBall()
     return balls + 1
 
-  strikeReceived: (strikes) ->
+  strikeReceived: (contact, strikes) ->
+    if contact is "foul" and strikes is 2
+      return strikes
     @displayAddStrike()
     return strikes + 1
 
@@ -228,16 +231,45 @@ class @Gameplay
     if result is "ground ball out"
         @displayAddOut()
 
-    @newBatter()
+  # inning controller
+  inningController: ->
+    outs = 0
+    @displayAddGameReport("First Inning")
+    while outs < 3
+      @atbat()
 
+  # display
+  displayAddBall: (balls) ->
+    $("#gameplay-at-bat-ball-indicator#{balls}").removeClass("glyphicon glyphicon-unchecked")
+    $("#gameplay-at-bat-ball-indicator#{balls}").addClass("glyphicon glyphicon-checked")
 
+  displayAddStrike: (strikes) ->
+    $("#gameplay-at-bat-strike-indicator#{strikes}").removeClass("glyphicon glyphicon-checked")
+    $("#gameplay-at-bat-strike-indicator#{strikes}").addClass("glyphicon glyphicon-checked")
 
-  displayAddBall: ->
+  displayAddOut: ->
+    if $("#gameplay-at-bat-out-indicator1").hasClass("glyphicon-checked")
+      $("#gameplay-at-bat-out-indicator1").removeClass("glyphicon glyphicon-unchecked")
+      $("#gameplay-at-bat-out-indicator1").addClass("glyphicon glyphicon-checked")
+    else
+      $("#gameplay-at-bat-out-indicator2").removeClass("glyphicon glyphicon-unchecked")
+      $("#gameplay-at-bat-out-indicator2").addClass("glyphicon glyphicon-checked")
 
-  displayAddStrike: ->
 
   displayClearBalls: ->
+    $("#gameplay-at-bat-ball-indicator1").removeClass("glyphicon glyphicon-checked")
+    $("#gameplay-at-bat-ball-indicator2").removeClass("glyphicon glyphicon-checked")
+    $("#gameplay-at-bat-ball-indicator3").removeClass("glyphicon glyphicon-checked")
+    $("#gameplay-at-bat-ball-indicator1").addClass("glyphicon glyphicon-unchecked")
+    $("#gameplay-at-bat-ball-indicator2").addClass("glyphicon glyphicon-unchecked")
+    $("#gameplay-at-bat-ball-indicator3").addClass("glyphicon glyphicon-unchecked")
 
   displayClearStrikes: ->
+    $("#gameplay-at-bat-strike-indicator1").removeClass("glyphicon glyphicon-checked")
+    $("#gameplay-at-bat-strike-indicator2").removeClass("glyphicon glyphicon-checked")
+    $("#gameplay-at-bat-strike-indicator1").addClass("glyphicon glyphicon-unchecked")
+    $("#gameplay-at-bat-strike-indicator2").addClass("glyphicon glyphicon-unchecked")
 
-  displayAddGameReport: ->
+
+  displayAddGameReport: (report) ->
+    $("#gameplay-game-report").append(report)
