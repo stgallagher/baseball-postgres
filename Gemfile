@@ -62,3 +62,7 @@ gem 'jquery-ui-rails'
 # Factory girl
 gem 'factory_girl_rails'
 
+# Teaspoon - Javascript testing
+group :development, :test do
+  gem "teaspoon"
+end
