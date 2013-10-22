@@ -51,6 +51,7 @@ th.gameplay-scoreboard-team-names  {
 }
 
 #gameplay-baseball-field {
+  background: brown;
   border: solid 1px black;
   margin-right: 5px;
   margin-left: 5px;
@@ -70,6 +71,7 @@ th.gameplay-scoreboard-team-names  {
   border: 200px solid transparent;
   border-bottom-color: green;
   position: relative; top: -200px;
+  z-index: 1;
 }
 
 #baseball-field-diamond:after {
@@ -81,35 +83,67 @@ th.gameplay-scoreboard-team-names  {
   height: 0;
   border: 200px solid transparent;
   border-top-color: green;
+  z-index: 1;
 }
 
 @mixin baseball-field-base {
   width: 20px;
-  height: 10px;
+  height: 20px;
   background: white;
   border: white solid 1px;
   position: absolute;
+  z-index: 2;
 }
 
 #baseball-field-home-base {
+  top: 350px;
+  left: 187px;
   @include baseball-field-base;
-  top: 110px;
-  left: 100px;
 }
 
 #baseball-field-first-base {
+  top: 190px;
+  left: 350px;
   @include baseball-field-base;
-  top: 130px;
-  left: 100px;
 }
 
 #baseball-field-second-base {
+  top: 32px;
+  left: 187px;
   @include baseball-field-base;
-  top: 150px;
-  left: 100px;
 }
 
-#baseball-field-base-runner {
+#baseball-field-third-base {
+  top: 190px;
+  left: 40px;
+  @include baseball-field-base;
+}
+
+#baseball-field-baseline-right {
+  background-color: white;
+  height: 410px;
+  width: 10px;
+  -moz-transform:rotate(45deg);
+  -webkit-transform:rotate(45deg);
+  position: absolute;
+  top: 70px;
+  left: 337px;
+  z-index:4
+}
+
+#baseball-field-baseline-left {
+  background-color: white;
+  height: 410px;
+  width: 10px;
+  -moz-transform:rotate(-45deg);
+  -webkit-transform:rotate(-45deg);
+  position: absolute;
+  top: 70px;
+  left: 53px;
+  z-index:4
+}
+
+@mixin baseball-field-base-runner {
   width: 20px;
   height: 20px;
   background: blue;
@@ -117,15 +151,55 @@ th.gameplay-scoreboard-team-names  {
   -webkit-border-radius: 10px;
   border-radius: 10px;
   position: absolute;
-  top: 100px;
-  left: 100px;
-  z-index: 1;
+  z-index: 2;
 }
 
-#baseball-field-third-base {
-  @include baseball-field-base;
+#baseball-field-home-base-runner {
+  top: 330px;
+  left: 187px;
+  @include baseball-field-base-runner
+}
+
+#baseball-field-first-base-runner {
   top: 170px;
-  left: 100px;
+  left: 350px;
+  @include baseball-field-base-runner
+}
+
+#baseball-field-second-base-runner {
+  top: 12px;
+  left: 187px;
+  @include baseball-field-base-runner
+}
+
+#baseball-field-third-base-runner {
+  top: 170px;
+  left: 40px;
+  @include baseball-field-base-runner
+}
+
+#baseball-field-pitchers-mound {
+  width: 80px;
+  height: 80px;
+  background: brown;
+  -moz-border-radius: 40px;
+  -webkit-border-radius: 40px;
+  border-radius: 40px;
+  position: absolute;
+  top: 160px;
+  left: 160px;
+  z-index: 2;
+}
+
+#baseball-field-pitchers-plate {
+  width: 20px;
+  height: 10px;
+  background: white;
+  border: white solid 1px;
+  position: absolute;
+  top: 195px;
+  left: 188px;
+  z-index: 3;
 }
 
 #gameplay-home-team {
