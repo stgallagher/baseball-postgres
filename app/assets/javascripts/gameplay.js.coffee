@@ -1,3 +1,8 @@
+$(document).ready ->
+  $("#start-button").on "click", ->
+    game = new Gameplay()
+    game.playInning()
+
 class @Gameplay
   PITCH_BALL_PROB = 50
   PITCH_STRIKE_PROB = 35
@@ -81,22 +86,24 @@ class @Gameplay
   atbat: (baseOccupancy, score) ->
     balls = 0
     strikes = 0
-    contact = null
     atbat = true
 
-    while atbat
+    i = 0
+    while i < 10
       result = @pitchResult(@pitch())
+      @displayAddGameReport("@atbat: Pitch Result -> result = #{result}")
       switch result
         when "ball" then balls = @ballReceived(balls)
         when "strike" then strikes = @strikeReceived(strikes)
         when "contact" then score = @contactReceived(baseOccupancy, score)
+
       if balls is 4
-        @display_clear_balls()
+        @displayClearBalls()
         score = @atbatWalkResult(baseOccupancy, score)
         result = "walk"
         atbat = false
       if strikes is 3
-        @display_clear_strikes()
+        @displayClearStrikes()
         result = "strikeout"
         atbat = false
       if contact is "foul"
@@ -104,6 +111,9 @@ class @Gameplay
       if contact? and contact isnt "foul"
         result = contact
         atbat = false
+
+      @displayAddGameReport("@atbat: atbat bool -> atbat = #{atbat}")
+      i++
 
     @displayUpdateScore(score)
     return result
@@ -120,7 +130,7 @@ class @Gameplay
 
   contactReceived: (baseOccupancy, score) ->
     result = @contactResult(@contact())
-    @displayAddGameReport(result) unless result is "foul"
+    @displayAddGameReport(result) #unless result is "foul"
     return @updateBaseOccupancy(baseOccupancy, result, score)
 
   atbatWalkResult: (baseOccupancy, score) ->
@@ -288,32 +298,31 @@ class @Gameplay
 
     return score
 
-  # inning controller
-  inningController: ->
+  # play inning
+  playInning: ->
     outs = 0
     score = 0
     baseOccupancy = { first: "empty", second: "empty", third: "empty" }
 
     @displayAddGameReport("First Inning")
-    while outs < 3
-      atbatResult = @atbat(baseOccupancy, score)
-      switch atBatResult
-        when "walk"
-          @displayAddGameReport("Walk")
-        when "strikeout"
-          @displayAddGameReport("Strikeout")
-          @displayAddOut()
-          outs = outs + 1
-        when "pop fly out"
-          @displayAddGameReport("Pop fly out")
-          @displayAddOut()
-          outs = outs + 1
-        when "ground ball out"
-          @displayAddGameReport("Ground ball out")
-          @displayAddOut()
-          outs = outs + 1
-        else
-          @displayAddGameReport(atBatResult)
+    atBatResult = @atbat(baseOccupancy, score)
+    switch atBatResult
+      when "walk"
+        @displayAddGameReport("Walk")
+      when "strikeout"
+        @displayAddGameReport("Strikeout")
+        @displayAddOut()
+        outs += 1
+      when "pop fly out"
+        @displayAddGameReport("Pop fly out")
+        @displayAddOut()
+        outs += 1
+      when "ground ball out"
+        @displayAddGameReport("Ground ball out")
+        @displayAddOut()
+        outs += 1
+      else
+        @displayAddGameReport(atBatResult)
 
     baseOccupancy = { first: "empty", second: "empty", third: "empty" }
 
@@ -351,7 +360,7 @@ class @Gameplay
     $("#gameplay-at-bat-strike-indicator2").addClass("glyphicon glyphicon-unchecked")
 
   displayAddGameReport: (report) ->
-    $("#gameplay-game-report").append(report)
+    $("#gameplay-game-report").append(report + "<br>")
 
   displayUpdateScore: (score) ->
     $("#gameplay-scoreboard-top-inning-1").text(score)
