@@ -83,39 +83,48 @@ class @Gameplay
     contact >= CONTACT_GROUND_BALL_OUT_RANGE[0] && contact <= CONTACT_GROUND_BALL_OUT_RANGE[1]
 
   # At-bat
-  atbat: (baseOccupancy, score) ->
+  atbat: ->
     balls = 0
     strikes = 0
+    contact = null
     atbat = true
 
-    i = 0
-    while i < 10
+    while atbat
       result = @pitchResult(@pitch())
       @displayAddGameReport("@atbat: Pitch Result -> result = #{result}")
       switch result
         when "ball" then balls = @ballReceived(balls)
-        when "strike" then strikes = @strikeReceived(strikes)
-        when "contact" then score = @contactReceived(baseOccupancy, score)
+        when "strike" then strikes = @strikeReceived(contact, strikes)
+        when "contact" then contact = @contactReceived()
 
       if balls is 4
-        @displayClearBalls()
-        score = @atbatWalkResult(baseOccupancy, score)
         result = "walk"
         atbat = false
+
       if strikes is 3
-        @displayClearStrikes()
         result = "strikeout"
         atbat = false
+
       if contact is "foul"
         strikes = @strikeReceived(contact, strikes)
+
       if contact? and contact isnt "foul"
         result = contact
         atbat = false
 
-      @displayAddGameReport("@atbat: atbat bool -> atbat = #{atbat}")
-      i++
+      @displayAddGameReport("@atbat: balls = #{balls}, strikes = #{strikes}, contact = #{contact}")
 
-    @displayUpdateScore(score)
+    return result
+
+  atBatResult: (result, score, baseOccupancy) ->
+    switch result
+      when "walk" then @atbatWalkResult(baseOccupancy, score)
+      when "strikeout" then @displayAddGameReport("StrikeOut")
+      when "pop fly out" then @displayAddGameReport("Pop fly out")
+      when "ground ball out" then @displayAddGameReport("Ground ball out")
+      else
+        @updateBaseOccupancy(baseOccupancy, result, score)
+        @displayUpdateScore(score)
     return result
 
   ballReceived: (balls) ->
@@ -128,10 +137,10 @@ class @Gameplay
     @displayAddStrike()
     return strikes + 1
 
-  contactReceived: (baseOccupancy, score) ->
+  contactReceived: ->
     result = @contactResult(@contact())
     @displayAddGameReport(result) #unless result is "foul"
-    return @updateBaseOccupancy(baseOccupancy, result, score)
+    return result
 
   atbatWalkResult: (baseOccupancy, score) ->
     return @updateBaseOccupancy(baseOccupancy, "single", score)
@@ -305,28 +314,12 @@ class @Gameplay
     baseOccupancy = { first: "empty", second: "empty", third: "empty" }
 
     @displayAddGameReport("First Inning")
-    atBatResult = @atbat(baseOccupancy, score)
-    switch atBatResult
-      when "walk"
-        @displayAddGameReport("Walk")
-      when "strikeout"
-        @displayAddGameReport("Strikeout")
-        @displayAddOut()
+    while outs <= 3
+      result = @atbat()
+      battingResult = @atBatResult(result, score, baseOccupancy)
+      if battingResult is "strikeout" or battingResult is "pop fly out" or battingResult is "ground ball out"
         outs += 1
-      when "pop fly out"
-        @displayAddGameReport("Pop fly out")
-        @displayAddOut()
-        outs += 1
-      when "ground ball out"
-        @displayAddGameReport("Ground ball out")
-        @displayAddOut()
-        outs += 1
-      else
-        @displayAddGameReport(atBatResult)
-
-    baseOccupancy = { first: "empty", second: "empty", third: "empty" }
-
-
+      @displayAddGameReport("@playInning: outs = #{outs}, score = #{score}, bases = #{JSON.stringify(baseOccupancy)}")
 
   # display
   displayAddBall: (balls) ->
