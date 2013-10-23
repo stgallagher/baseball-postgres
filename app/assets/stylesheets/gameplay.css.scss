@@ -209,7 +209,7 @@ th.gameplay-scoreboard-team-names  {
 }
 
 #gameplay-at-bat {
-  height: 50px;
+  height: 70px;
   border: solid 1px black;
   padding-top: 4px;
 }
@@ -222,6 +222,11 @@ th.gameplay-scoreboard-team-names  {
 #gameplay-at-bat-strikes {
   float: left;
   margin-right: 10px;
+}
+
+#gameplay-at-bat-out {
+  float: left;
+  margin-right: 23px;
 }
 
 #gameplay-at-bat-ball-indicators {

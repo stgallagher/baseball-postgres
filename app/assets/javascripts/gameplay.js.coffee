@@ -23,7 +23,6 @@ class @Gameplay
   CONTACT_POP_FLY_OUT_RANGE = [CONTACT_FOUL_PROB + CONTACT_SINGLE_PROB + CONTACT_DOUBLE_PROB + CONTACT_TRIPLE_PROB + CONTACT_HOME_RUN_PROB, CONTACT_FOUL_PROB + CONTACT_SINGLE_PROB + CONTACT_DOUBLE_PROB + CONTACT_TRIPLE_PROB + CONTACT_HOME_RUN_PROB + CONTACT_POP_FLY_OUT_PROB]
   CONTACT_GROUND_BALL_OUT_RANGE = [CONTACT_FOUL_PROB + CONTACT_SINGLE_PROB + CONTACT_DOUBLE_PROB + CONTACT_TRIPLE_PROB + CONTACT_HOME_RUN_PROB + CONTACT_POP_FLY_OUT_PROB + 1, 100]
 
-  baseOccupancy = { first: "empty", second: "empty", third: "empty" }
 
   # Pitch Results
   pitch: ->
@@ -58,28 +57,28 @@ class @Gameplay
     if @inGroundBallOutRange(contact) then return "ground ball out"
 
   inFoulRange: (contact) ->
-    contact > CONTACT_FOUL_RANGE[0] && contact <= CONTACT_FOUL_RANGE[1]
+    contact >= CONTACT_FOUL_RANGE[0] && contact <= CONTACT_FOUL_RANGE[1]
 
   inSingleRange: (contact) ->
-    contact > CONTACT_SINGLE_RANGE[0] && contact <= CONTACT_SINGLE_RANGE[1]
+    contact >= CONTACT_SINGLE_RANGE[0] && contact <= CONTACT_SINGLE_RANGE[1]
 
   inDoubleRange: (contact) ->
-    contact > CONTACT_DOUBLE_RANGE[0] && contact <= CONTACT_DOUBLE_RANGE[1]
+    contact >= CONTACT_DOUBLE_RANGE[0] && contact <= CONTACT_DOUBLE_RANGE[1]
 
   inTripleRange: (contact) ->
-    contact > CONTACT_TRIPLE_RANGE[0] && contact <= CONTACT_TRIPLE_RANGE[1]
+    contact >= CONTACT_TRIPLE_RANGE[0] && contact <= CONTACT_TRIPLE_RANGE[1]
 
   inHomeRunRange: (contact) ->
-    contact > CONTACT_HOME_RUN_RANGE[0] && contact <= CONTACT_HOME_RUN_RANGE[1]
+    contact >= CONTACT_HOME_RUN_RANGE[0] && contact <= CONTACT_HOME_RUN_RANGE[1]
 
   inPopFlyOutRange: (contact) ->
-    contact > CONTACT_POP_FLY_OUT_RANGE[0] && contact <= CONTACT_POP_FLY_OUT_RANGE[1]
+    contact >= CONTACT_POP_FLY_OUT_RANGE[0] && contact <= CONTACT_POP_FLY_OUT_RANGE[1]
 
   inGroundBallOutRange: (contact) ->
-    contact > CONTACT_GROUND_BALL_OUT_RANGE[0] && contact <= CONTACT_GROUND_BALL_OUT_RANGE[1]
+    contact >= CONTACT_GROUND_BALL_OUT_RANGE[0] && contact <= CONTACT_GROUND_BALL_OUT_RANGE[1]
 
   # At-bat
-  atbat: ->
+  atbat: (baseOccupancy, score) ->
     balls = 0
     strikes = 0
     contact = null
@@ -90,9 +89,10 @@ class @Gameplay
       switch result
         when "ball" then balls = @ballReceived(balls)
         when "strike" then strikes = @strikeReceived(strikes)
-        when "contact" then @contactReceived()
+        when "contact" then score = @contactReceived(baseOccupancy, score)
       if balls is 4
         @display_clear_balls()
+        score = @atbatWalkResult(baseOccupancy, score)
         result = "walk"
         atbat = false
       if strikes is 3
@@ -105,6 +105,7 @@ class @Gameplay
         result = contact
         atbat = false
 
+    @displayUpdateScore(score)
     return result
 
   ballReceived: (balls) ->
@@ -117,126 +118,206 @@ class @Gameplay
     @displayAddStrike()
     return strikes + 1
 
-  contactReceived: (contact) ->
-    result = @contactResult()
+  contactReceived: (baseOccupancy, score) ->
+    result = @contactResult(@contact())
     @displayAddGameReport(result) unless result is "foul"
-    @updateBaseOccupancy(result)
+    return @updateBaseOccupancy(baseOccupancy, result, score)
 
-  updateBaseOccupancy: (result) ->
+  atbatWalkResult: (baseOccupancy, score) ->
+    return @updateBaseOccupancy(baseOccupancy, "single", score)
+
+
+  updateBaseOccupancy: (baseOccupancy, result, score) ->
     if result is "single"
-      if baseOccupancy.first is "empty"
-        baseOccupancy.first("manned")
-      else if baseOccupancy.first is "manned" and baseOccupancy.second is "manned" and baseOccupancy.third is "manned"
-        @runScored(1)
+      if baseOccupancy.first is "manned" and baseOccupancy.second is "manned" and baseOccupancy.third is "manned"
+        score += 1
+        baseOccupancy.first = "manned"
+        baseOccupancy.second = "manned"
+        baseOccupancy.third = "manned"
       else if baseOccupancy.first is "manned" and baseOccupancy.second is "manned" and baseOccupancy.third is "empty"
-        baseOccupancy.first("manned")
-        baseOccupancy.second("manned")
-        baseOccupancy.third("manned")
-      else if baseOccupancy.first is "manned" and baseOccupancy.second is "empty" and baseOccupancy.third is "man"
-        baseOccupancy.first("manned")
-        baseOccupancy.second("manned")
-        baseOccupancy.third("manned")
+        baseOccupancy.first = "manned"
+        baseOccupancy.second = "manned"
+        baseOccupancy.third = "manned"
+      else if baseOccupancy.first is "empty" and baseOccupancy.second is "manned" and baseOccupancy.third is "manned"
+        score += 1
+        baseOccupancy.first = "manned"
+        baseOccupancy.second = "empty"
+        baseOccupancy.third = "manned"
+      else if baseOccupancy.first is "manned" and baseOccupancy.second is "empty" and baseOccupancy.third is "manned"
+        score += 1
+        baseOccupancy.first = "manned"
+        baseOccupancy.second = "manned"
+        baseOccupancy.third = "empty"
+      else if baseOccupancy.first is "manned" and baseOccupancy.second is "empty" and baseOccupancy.third is "empty"
+        baseOccupancy.first = "manned"
+        baseOccupancy.second = "manned"
+        baseOccupancy.third = "empty"
+      else if baseOccupancy.first is "empty" and baseOccupancy.second is "manned" and baseOccupancy.third is "empty"
+        baseOccupancy.first = "manned"
+        baseOccupancy.second = "empty"
+        baseOccupancy.third = "manned"
+      else if baseOccupancy.first is "empty" and baseOccupancy.second is "empty" and baseOccupancy.third is "manned"
+        score += 1
+        baseOccupancy.first = "manned"
+        baseOccupancy.second = "empty"
+        baseOccupancy.third = "empty"
+      else if baseOccupancy.first is "empty" and baseOccupancy.second is "empty" and baseOccupancy.third is "empty"
+        baseOccupancy.first = "manned"
+        baseOccupancy.second = "empty"
+        baseOccupancy.third = "empty"
     if result is "double"
       if baseOccupancy.first is "manned" and baseOccupancy.second is "manned" and baseOccupancy.third is "manned"
-        @runScored(2)
-        baseOccupancy.first("empty")
-        baseOccupancy.second("manned")
-        baseOccupancy.third("manned")
-      if baseOccupancy.first is "empty" and baseOccupancy.second is "manned" and baseOccupancy.third is "manned"
-        @runScored(2)
-        baseOccupancy.first("empty")
-        baseOccupancy.second("manned")
-        baseOccupancy.third("empty")
-      if baseOccupancy.first is "manned" and baseOccupancy.second is "empty" and baseOccupancy.third is "manned"
-        @runScored(1)
-        baseOccupancy.first("empty")
-        baseOccupancy.second("manned")
-        baseOccupancy.third("manned")
-      if baseOccupancy.first is "empty" and baseOccupancy.second is "empty" and baseOccupancy.third is "manned"
-        @runScored(1)
-        baseOccupancy.first("empty")
-        baseOccupancy.second("manned")
-        baseOccupancy.third("empty")
-      if baseOccupancy.first is "manned" and baseOccupancy.second is "empty" and baseOccupancy.third is "empty"
-        baseOccupancy.first("empty")
-        baseOccupancy.second("manned")
-        baseOccupancy.third("manned")
-      if baseOccupancy.first is "empty" and baseOccupancy.second is "empty" and baseOccupancy.third is "empty"
-        baseOccupancy.first("empty")
-        baseOccupancy.second("manned")
-        baseOccupancy.third("empty")
+        score += 2
+        baseOccupancy.first = "empty"
+        baseOccupancy.second = "manned"
+        baseOccupancy.third = "manned"
+      else if baseOccupancy.first is "manned" and baseOccupancy.second is "manned" and baseOccupancy.third is "empty"
+        score += 1
+        baseOccupancy.first = "empty"
+        baseOccupancy.second = "manned"
+        baseOccupancy.third = "manned"
+      else if baseOccupancy.first is "empty" and baseOccupancy.second is "manned" and baseOccupancy.third is "manned"
+        score += 2
+        baseOccupancy.first = "empty"
+        baseOccupancy.second = "manned"
+        baseOccupancy.third = "empty"
+      else if baseOccupancy.first is "manned" and baseOccupancy.second is "empty" and baseOccupancy.third is "manned"
+        score += 1
+        baseOccupancy.first = "empty"
+        baseOccupancy.second = "manned"
+        baseOccupancy.third = "manned"
+      else if baseOccupancy.first is "empty" and baseOccupancy.second is "manned" and baseOccupancy.third is "empty"
+        score += 1
+        baseOccupancy.first = "empty"
+        baseOccupancy.second = "manned"
+        baseOccupancy.third = "empty"
+      else if baseOccupancy.first is "empty" and baseOccupancy.second is "empty" and baseOccupancy.third is "manned"
+        score += 1
+        baseOccupancy.first = "empty"
+        baseOccupancy.second = "manned"
+        baseOccupancy.third = "empty"
+      else if baseOccupancy.first is "manned" and baseOccupancy.second is "empty" and baseOccupancy.third is "empty"
+        baseOccupancy.first = "empty"
+        baseOccupancy.second = "manned"
+        baseOccupancy.third = "manned"
+      else if baseOccupancy.first is "empty" and baseOccupancy.second is "empty" and baseOccupancy.third is "empty"
+        baseOccupancy.first = "empty"
+        baseOccupancy.second = "manned"
+        baseOccupancy.third = "empty"
     if result is "triple"
       if baseOccupancy.first is "manned" and baseOccupancy.second is "manned" and baseOccupancy.third is "manned"
-        @runScored(3)
-        baseOccupancy.first("empty")
-        baseOccupancy.second("empty")
-        baseOccupancy.third("manned")
-      if baseOccupancy.first is "empty" and baseOccupancy.second is "manned" and baseOccupancy.third is "manned"
-        @runScored(2)
-        baseOccupancy.first("empty")
-        baseOccupancy.second("empty")
-        baseOccupancy.third("manned")
-      if baseOccupancy.first is "manned" and baseOccupancy.second is "empty" and baseOccupancy.third is "manned"
-        @runScored(2)
-        baseOccupancy.first("empty")
-        baseOccupancy.second("empty")
-        baseOccupancy.third("manned")
-      if baseOccupancy.first is "empty" and baseOccupancy.second is "empty" and baseOccupancy.third is "manned"
-        @runScored(1)
-        baseOccupancy.first("empty")
-        baseOccupancy.second("empty")
-        baseOccupancy.third("manned")
-      if baseOccupancy.first is "manned" and baseOccupancy.second is "empty" and baseOccupancy.third is "empty"
-        @runScored(1)
-        baseOccupancy.first("empty")
-        baseOccupancy.second("empty")
-        baseOccupancy.third("manned")
-      if baseOccupancy.first is "empty" and baseOccupancy.second is "empty" and baseOccupancy.third is "empty"
-        baseOccupancy.first("empty")
-        baseOccupancy.second("empty")
-        baseOccupancy.third("manned")
+        score += 3
+        baseOccupancy.first = "empty"
+        baseOccupancy.second = "empty"
+        baseOccupancy.third = "manned"
+      else if baseOccupancy.first is "empty" and baseOccupancy.second is "manned" and baseOccupancy.third is "manned"
+        score += 2
+        baseOccupancy.first = "empty"
+        baseOccupancy.second = "empty"
+        baseOccupancy.third = "manned"
+      else if baseOccupancy.first is "manned" and baseOccupancy.second is "manned" and baseOccupancy.third is "empty"
+        score += 2
+        baseOccupancy.first = "empty"
+        baseOccupancy.second = "empty"
+        baseOccupancy.third = "manned"
+      else if baseOccupancy.first is "manned" and baseOccupancy.second is "empty" and baseOccupancy.third is "manned"
+        score += 2
+        baseOccupancy.first = "empty"
+        baseOccupancy.second = "empty"
+        baseOccupancy.third = "manned"
+      else if baseOccupancy.first is "empty" and baseOccupancy.second is "empty" and baseOccupancy.third is "manned"
+        score += 1
+        baseOccupancy.first = "empty"
+        baseOccupancy.second = "empty"
+        baseOccupancy.third = "manned"
+      else if baseOccupancy.first is "empty" and baseOccupancy.second is "manned" and baseOccupancy.third is "manned"
+        score += 2
+        baseOccupancy.first = "empty"
+        baseOccupancy.second = "empty"
+        baseOccupancy.third = "manned"
+      else if baseOccupancy.first is "manned" and baseOccupancy.second is "empty" and baseOccupancy.third is "empty"
+        score += 1
+        baseOccupancy.first = "empty"
+        baseOccupancy.second = "empty"
+        baseOccupancy.third = "manned"
+      else if baseOccupancy.first is "empty" and baseOccupancy.second is "empty" and baseOccupancy.third is "empty"
+        baseOccupancy.first = "empty"
+        baseOccupancy.second = "empty"
+        baseOccupancy.third = "manned"
     if result is "home run"
       if baseOccupancy.first is "manned" and baseOccupancy.second is "manned" and baseOccupancy.third is "manned"
-        @runScored(4)
-        baseOccupancy.first("empty")
-        baseOccupancy.second("empty")
-        baseOccupancy.third("empty")
-      if baseOccupancy.first is "empty" and baseOccupancy.second is "manned" and baseOccupancy.third is "manned"
-        @runScored(3)
-        baseOccupancy.first("empty")
-        baseOccupancy.second("empty")
-        baseOccupancy.third("empty")
-      if baseOccupancy.first is "manned" and baseOccupancy.second is "empty" and baseOccupancy.third is "manned"
-        @runScored(3)
-        baseOccupancy.first("empty")
-        baseOccupancy.second("empty")
-        baseOccupancy.third("empty")
-      if baseOccupancy.first is "empty" and baseOccupancy.second is "empty" and baseOccupancy.third is "manned"
-        @runScored(2)
-        baseOccupancy.first("empty")
-        baseOccupancy.second("empty")
-        baseOccupancy.third("empty")
-      if baseOccupancy.first is "manned" and baseOccupancy.second is "empty" and baseOccupancy.third is "empty"
-        @runScored(2)
-        baseOccupancy.first("empty")
-        baseOccupancy.second("empty")
-        baseOccupancy.third("empty")
-      if baseOccupancy.first is "empty" and baseOccupancy.second is "empty" and baseOccupancy.third is "empty"
-        @runScored(1)
-        baseOccupancy.first("empty")
-        baseOccupancy.second("empty")
-        baseOccupancy.third("empty")
-    if result is "pop fly out"
-        @displayAddOut()
-    if result is "ground ball out"
-        @displayAddOut()
+        score += 4
+        baseOccupancy.first = "empty"
+        baseOccupancy.second = "empty"
+        baseOccupancy.third = "empty"
+      else if baseOccupancy.first is "manned" and baseOccupancy.second is "manned" and baseOccupancy.third is "empty"
+        score += 3
+        baseOccupancy.first = "empty"
+        baseOccupancy.second = "empty"
+        baseOccupancy.third = "empty"
+      else if baseOccupancy.first is "empty" and baseOccupancy.second is "manned" and baseOccupancy.third is "manned"
+        score += 3
+        baseOccupancy.first = "empty"
+        baseOccupancy.second = "empty"
+        baseOccupancy.third = "empty"
+      else if baseOccupancy.first is "manned" and baseOccupancy.second is "empty" and baseOccupancy.third is "manned"
+        score += 3
+        baseOccupancy.first = "empty"
+        baseOccupancy.second = "empty"
+        baseOccupancy.third = "empty"
+      else if baseOccupancy.first is "empty" and baseOccupancy.second is "empty" and baseOccupancy.third is "manned"
+        score += 2
+        baseOccupancy.first = "empty"
+        baseOccupancy.second = "empty"
+        baseOccupancy.third = "empty"
+      else if baseOccupancy.first is "empty" and baseOccupancy.second is "manned" and baseOccupancy.third is "empty"
+        score += 2
+        baseOccupancy.first = "empty"
+        baseOccupancy.second = "empty"
+        baseOccupancy.third = "empty"
+      else if baseOccupancy.first is "manned" and baseOccupancy.second is "empty" and baseOccupancy.third is "empty"
+        score += 2
+        baseOccupancy.first = "empty"
+        baseOccupancy.second = "empty"
+        baseOccupancy.third = "empty"
+      else if baseOccupancy.first is "empty" and baseOccupancy.second is "empty" and baseOccupancy.third is "empty"
+        score += 1
+        baseOccupancy.first = "empty"
+        baseOccupancy.second = "empty"
+        baseOccupancy.third = "empty"
+
+    return score
 
   # inning controller
   inningController: ->
     outs = 0
+    score = 0
+    baseOccupancy = { first: "empty", second: "empty", third: "empty" }
+
     @displayAddGameReport("First Inning")
     while outs < 3
-      @atbat()
+      atbatResult = @atbat(baseOccupancy, score)
+      switch atBatResult
+        when "walk"
+          @displayAddGameReport("Walk")
+        when "strikeout"
+          @displayAddGameReport("Strikeout")
+          @displayAddOut()
+          outs = outs + 1
+        when "pop fly out"
+          @displayAddGameReport("Pop fly out")
+          @displayAddOut()
+          outs = outs + 1
+        when "ground ball out"
+          @displayAddGameReport("Ground ball out")
+          @displayAddOut()
+          outs = outs + 1
+        else
+          @displayAddGameReport(atBatResult)
+
+    baseOccupancy = { first: "empty", second: "empty", third: "empty" }
+
+
 
   # display
   displayAddBall: (balls) ->
@@ -255,7 +336,6 @@ class @Gameplay
       $("#gameplay-at-bat-out-indicator2").removeClass("glyphicon glyphicon-unchecked")
       $("#gameplay-at-bat-out-indicator2").addClass("glyphicon glyphicon-checked")
 
-
   displayClearBalls: ->
     $("#gameplay-at-bat-ball-indicator1").removeClass("glyphicon glyphicon-checked")
     $("#gameplay-at-bat-ball-indicator2").removeClass("glyphicon glyphicon-checked")
@@ -270,6 +350,8 @@ class @Gameplay
     $("#gameplay-at-bat-strike-indicator1").addClass("glyphicon glyphicon-unchecked")
     $("#gameplay-at-bat-strike-indicator2").addClass("glyphicon glyphicon-unchecked")
 
-
   displayAddGameReport: (report) ->
     $("#gameplay-game-report").append(report)
+
+  displayUpdateScore: (score) ->
+    $("#gameplay-scoreboard-top-inning-1").text(score)
