@@ -157,24 +157,28 @@ th.gameplay-scoreboard-team-names  {
 #baseball-field-home-base-runner {
   top: 330px;
   left: 187px;
+  display: none;
   @include baseball-field-base-runner
 }
 
 #baseball-field-first-base-runner {
   top: 170px;
   left: 350px;
+  display: none;
   @include baseball-field-base-runner
 }
 
 #baseball-field-second-base-runner {
   top: 12px;
   left: 187px;
+  display: none;
   @include baseball-field-base-runner
 }
 
 #baseball-field-third-base-runner {
   top: 170px;
   left: 40px;
+  display: none;
   @include baseball-field-base-runner
 }
 

@@ -1,6 +1,5 @@
 .container
   .row
-    #start-button.btn.btn-primary Start
     #gameplay-title.col-md-12.panel Away Avengers Vs. Home Hercules
   .row
     #gameplay-scoreboard.col-md-6.col-md-offset-3.panel
@@ -21,28 +20,28 @@
         %tbody
           %tr
             %td.gameplay-scoreboard-team-names Away
-            %td#gameplay-scoreboard-top-inning-1
-            %td
-            %td
-            %td
-            %td
-            %td
-            %td
-            %td
-            %td
-            %td
+            %td#gameplay-scoreboard-away-inning-1
+            %td#gameplay-scoreboard-away-inning-2
+            %td#gameplay-scoreboard-away-inning-3
+            %td#gameplay-scoreboard-away-inning-4
+            %td#gameplay-scoreboard-away-inning-5
+            %td#gameplay-scoreboard-away-inning-6
+            %td#gameplay-scoreboard-away-inning-7
+            %td#gameplay-scoreboard-away-inning-8
+            %td#gameplay-scoreboard-away-inning-9
+            %td#gameplay-scoreboard-away-total 0
           %tr
             %td.gameplay-scoreboard-team-names Home
-            %td
-            %td
-            %td
-            %td
-            %td
-            %td
-            %td
-            %td
-            %td
-            %td
+            %td#gameplay-scoreboard-home-inning-1
+            %td#gameplay-scoreboard-home-inning-2
+            %td#gameplay-scoreboard-home-inning-3
+            %td#gameplay-scoreboard-home-inning-4
+            %td#gameplay-scoreboard-home-inning-5
+            %td#gameplay-scoreboard-home-inning-6
+            %td#gameplay-scoreboard-home-inning-7
+            %td#gameplay-scoreboard-home-inning-8
+            %td#gameplay-scoreboard-home-inning-9
+            %td#gameplay-scoreboard-home-total 0
   .row
     .col-md-3
       #gameplay-away-team.panel
@@ -183,5 +182,7 @@
         #gameplay-at-bat-out Out
         #gameplay-at-bat-out-indicator1.glyphicon.glyphicon-unchecked
         #gameplay-at-bat-out-indicator2.glyphicon.glyphicon-unchecked
+  .row
+    #start-button.col-md-2.col-md-offset-5.btn.btn-primary Start
   .row
     #gameplay-game-report.col-md-8.col-md-offset-2.panel
