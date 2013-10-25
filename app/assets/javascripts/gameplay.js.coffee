@@ -1,7 +1,11 @@
 $(document).ready ->
+  game = new Gameplay()
+
+  inning = 1
+
   $("#start-button").on "click", ->
-    game = new Gameplay()
-    game.playGame()
+    game.playGame(inning)
+    inning += 1
 
 class @Gameplay
   PITCH_BALL_PROB = 50
@@ -343,7 +347,6 @@ class @Gameplay
       battingResult = @atBatResult(result, score, baseOccupancy)
       if battingResult.result is "strikeout" or battingResult.result is "pop fly out" or battingResult.result is "ground ball out"
         outs += 1
-      #@displayAddGameReport("<b>battingResult: #{JSON.stringify(battingResult)}</b>")
       score = battingResult.score
       @displayAddOut()
       @displayClearBalls()
@@ -351,14 +354,14 @@ class @Gameplay
 
     return score
 
-  playGame: ->
+  playGame: (inning) ->
     score = 0
-    innings = [1..9]
 
-    @displayAddGameReport("<h3>PLAY BALL!!!</h3>")
-    while innings.length isnt 0
-      inning = innings.shift()
+    #@displayAddGameReport("<h3>PLAY BALL!!!</h3>")
+    #while innings.length isnt 0
+    #inning = innings.shift()
 
+    if inning < 10
       @displayAddGameReport("<br><b>#{inning} Inning - Top</b>")
       side = "away"
       score = @playInning(score)
