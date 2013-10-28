@@ -1,6 +1,5 @@
 #= require gameplay
 
-
 describe "Gameplay", ->
   gp = null
 
@@ -17,12 +16,18 @@ describe "Gameplay", ->
     expect(gp.pitchResult(95)).toBe("contact")
 
   it "pitch results in a strike, ball, or contact", ->
-    result = gp.pitchResult(gp.pitch())
-    expect(["ball", "strike", "contact"]).toContain(result)
+    pitches = [1..100]
+    for pitch in pitches
+      result = gp.pitchResult(pitch)
+      #console.log("pitch = #{pitch} -> result = #{result}")
+      expect(["ball", "strike", "contact"]).toContain(result)
 
   it "contact results in a one of a set of contact results", ->
-    result = gp.contactResult(gp.contact())
-    expect(["foul", "single", "double", "triple", "home run", "pop fly out", "ground ball out"]).toContain(result)
+    contacts = [1..100]
+    for contact in contacts
+      result = gp.contactReceived(contact)
+      #console.log("contact = #{contact} -> result = #{result}")
+      expect(["foul", "single", "double", "triple", "home run", "pop fly out", "ground ball out"]).toContain(result)
 
   it "ball recieved adds one to the ball count", ->
     expect(gp.ballReceived(2)).toBe(3)
@@ -93,8 +98,8 @@ describe "Gameplay", ->
   # --- End updateBaseOccupancy scenarios
 
   it "walks act like singles", ->
-    bases = { first: "manned", second: "empty", third: "empty" }
+    bases = { first: "manned", second: "empty", third: "manned" }
     score = 0
-    expect(gp.atbatWalkResult(bases, score)).toBe(0)
-    expect(bases).toEqual({ first: "manned", second: "manned", third: "empty" })
+    expect(gp.updateBaseOccupancy(bases,'walk', score)).toBe(0)
+    expect(bases).toEqual({ first: "manned", second: "manned", third: "manned" })
 

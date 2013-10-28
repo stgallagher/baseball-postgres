@@ -1,11 +1,10 @@
+#= require underscore
+
 $(document).ready ->
   game = new Gameplay()
 
-  inning = 1
-
   $("#start-button").on "click", ->
-    game.playGame(inning)
-    inning += 1
+    game.playGame()
 
 class @Gameplay
   PITCH_BALL_PROB = 50
@@ -13,8 +12,8 @@ class @Gameplay
   PITCH_CONTACT_PROB = 100 - PITCH_BALL_PROB - PITCH_STRIKE_PROB
 
   PITCH_BALL_RANGE = [0, PITCH_BALL_PROB]
-  PITCH_STRIKE_RANGE = [(PITCH_BALL_PROB) + 1, PITCH_BALL_PROB + PITCH_STRIKE_PROB]
-  PITCH_CONTACT_RANGE = [(PITCH_BALL_PROB + PITCH_STRIKE_PROB) + 1, 100]
+  PITCH_STRIKE_RANGE = [(PITCH_BALL_PROB), PITCH_BALL_PROB + PITCH_STRIKE_PROB]
+  PITCH_CONTACT_RANGE = [(PITCH_BALL_PROB + PITCH_STRIKE_PROB), 100]
 
   CONTACT_FOUL_PROB = 35
   CONTACT_SINGLE_PROB = 15
@@ -31,7 +30,6 @@ class @Gameplay
   CONTACT_HOME_RUN_RANGE = [CONTACT_FOUL_PROB + CONTACT_SINGLE_PROB + CONTACT_DOUBLE_PROB + CONTACT_TRIPLE_PROB + 1, CONTACT_FOUL_PROB + CONTACT_SINGLE_PROB + CONTACT_DOUBLE_PROB + CONTACT_TRIPLE_PROB + CONTACT_HOME_RUN_PROB]
   CONTACT_POP_FLY_OUT_RANGE = [CONTACT_FOUL_PROB + CONTACT_SINGLE_PROB + CONTACT_DOUBLE_PROB + CONTACT_TRIPLE_PROB + CONTACT_HOME_RUN_PROB, CONTACT_FOUL_PROB + CONTACT_SINGLE_PROB + CONTACT_DOUBLE_PROB + CONTACT_TRIPLE_PROB + CONTACT_HOME_RUN_PROB + CONTACT_POP_FLY_OUT_PROB]
   CONTACT_GROUND_BALL_OUT_RANGE = [CONTACT_FOUL_PROB + CONTACT_SINGLE_PROB + CONTACT_DOUBLE_PROB + CONTACT_TRIPLE_PROB + CONTACT_HOME_RUN_PROB + CONTACT_POP_FLY_OUT_PROB + 1, 100]
-
 
   # Pitch
   pitch: ->
@@ -141,41 +139,68 @@ class @Gameplay
     if @inPopFlyOutRange(contact) then return "pop fly out"
     if @inGroundBallOutRange(contact) then return "ground ball out"
 
+  BASE_RUNNERS =
+      basesLoaded:    first: "manned", second: "manned", third: "manned"
+      firstAndSecond: first: "manned", second: "manned", third: "empty"
+      firstAndThird:  first: "manned", second: "empty", third: "manned"
+      secondAndThird: first: "empty", second: "manned", third: "manned"
+      first:          first: "manned", second: "empty", third: "empty"
+      second:         first: "empty", second: "manned", third: "empty"
+      third:          first: "empty", second: "empty", third: "manned"
+      empty:          first: "empty", second: "empty", third: "empty"
+
+  WALK_AT_BAT_RESULT =
+      basesLoaded:    first: "manned",  second: "manned", third: "manned",  addedScore: 1
+      firstAndSecond: first: "manned",  second: "manned", third: "empty",   addedScore: 0
+      firstAndThird:  first: "manned",  second: "empty",  third: "manned",  addedScore: 0
+      secondAndThird: first: "empty",   second: "manned", third: "manned",  addedScore: 0
+      first:          first: "manned",  second: "empty",  third: "empty",   addedScore: 0
+      second:         first: "empty",   second: "manned", third: "empty",   addedScore: 0
+      third:          first: "empty",   second: "empty",  third: "manned",  addedScore: 0
+      empty:          first: "empty",   second: "empty",  third: "empty",   addedScore: 0
+
+  #AT_BAT_RESULTS =
+  #    walk:     WALK_AT_BAT_RESULT
+  #    single:   SINGLE_AT_BAT_RESULT,
+  #    double:   DOUBLE_AT_BAT_RESULT,
+  #    triple:   TRIPLE_AT_BAT_RESULT,
+  #    homerun:  HOME_RUN_AT_BAT_RESULT
+
+
+  devUpdateBaseOccupancy: (baseOccupancy, result) ->
+    switch baseOccupancy
+      when BASE_RUNNERS.basesLoaded then
+      when BASE_RUNNERS.firstAndSecond then baseOccupancy = AT_BAT_RESULTS["#{result}"].basesLoaded
+      when BASE_RUNNERS.secondAndThird then baseOccupancy = BASE_RUNNERS.basesLoaded
+      when BASE_RUNNERS.firstAndThird  then baseOccupancy = BASE_RUNNERS.basesLoaded
+      when BASE_RUNNERS.first   then baseOccupancy = BASE_RUNNERS.firstAndSecond
+      when BASE_RUNNERS.second  then baseOccupancy = BASE_RUNNERS.firstAndSecond
+      when BASE_RUNNERS.third   then baseOccupancy = BASE_RUNNERS.firstAndThird
+      when BASE_RUNNERS.empty   then baseOccupancy = BASE_RUNNERS.first
+    return score_added
+
   updateBaseOccupancy: (baseOccupancy, result, score) ->
     if result is "walk"
-      if baseOccupancy.first is "manned" and baseOccupancy.second is "manned" and baseOccupancy.third is "manned"
+      if _.isEqual(baseOccupancy, BASE_RUNNERS.basesLoaded)
         score += 1
-        baseOccupancy.first = "manned"
-        baseOccupancy.second = "manned"
-        baseOccupancy.third = "manned"
-      else if baseOccupancy.first is "manned" and baseOccupancy.second is "manned" and baseOccupancy.third is "empty"
-        baseOccupancy.first = "manned"
-        baseOccupancy.second = "manned"
-        baseOccupancy.third = "manned"
-      else if baseOccupancy.first is "empty" and baseOccupancy.second is "manned" and baseOccupancy.third is "manned"
-        baseOccupancy.first = "manned"
-        baseOccupancy.second = "manned"
-        baseOccupancy.third = "manned"
-      else if baseOccupancy.first is "manned" and baseOccupancy.second is "empty" and baseOccupancy.third is "manned"
-        baseOccupancy.first = "manned"
-        baseOccupancy.second = "manned"
-        baseOccupancy.third = "manned"
-      else if baseOccupancy.first is "manned" and baseOccupancy.second is "empty" and baseOccupancy.third is "empty"
-        baseOccupancy.first = "manned"
-        baseOccupancy.second = "manned"
-        baseOccupancy.third = "empty"
-      else if baseOccupancy.first is "empty" and baseOccupancy.second is "manned" and baseOccupancy.third is "empty"
-        baseOccupancy.first = "manned"
-        baseOccupancy.second = "manned"
-        baseOccupancy.third = "empty"
-      else if baseOccupancy.first is "empty" and baseOccupancy.second is "empty" and baseOccupancy.third is "manned"
-        baseOccupancy.first = "manned"
-        baseOccupancy.second = "empty"
-        baseOccupancy.third = "manned"
-      else if baseOccupancy.first is "empty" and baseOccupancy.second is "empty" and baseOccupancy.third is "empty"
-        baseOccupancy.first = "manned"
-        baseOccupancy.second = "empty"
-        baseOccupancy.third = "empty"
+        baseOccupancy = BASE_RUNNERS.basesLoaded
+      else if _.isEqual(baseOccupancy, BASE_RUNNERS.firstAndSecond)
+        baseOccupancy = BASE_RUNNERS.basesLoaded
+      else if _.isEqual(baseOccupancy, BASE_RUNNERS.secondAndThird)
+        baseOccupancy = BASE_RUNNERS.basesLoaded
+      else if _.isEqual(baseOccupancy, BASE_RUNNERS.firstAndThird)
+        baseOccupancy.first = BASE_RUNNERS.basesLoaded.first
+        baseOccupancy.second = BASE_RUNNERS.basesLoaded.second
+        baseOccupancy.third = BASE_RUNNERS.basesLoaded.third
+      else if _.isEqual(baseOccupancy, BASE_RUNNERS.first)
+        baseOccupancy = BASE_RUNNERS.firstAndSecond
+      else if _.isEqual(baseOccupancy, BASE_RUNNERS.second)
+        baseOccupancy = BASE_RUNNERS.firstAndSecond
+      else if _.isEqual(baseOccupancy, BASE_RUNNERS.third)
+        baseOccupancy = BASE_RUNNERS.firstAndThird
+      else if _.isEqual(baseOccupancy, BASE_RUNNERS.empty)
+        baseOccupancy = BASE_RUNNERS.first
+
     if result is "single"
       if baseOccupancy.first is "manned" and baseOccupancy.second is "manned" and baseOccupancy.third is "manned"
         score += 1
@@ -354,25 +379,26 @@ class @Gameplay
 
     return score
 
-  playGame: (inning) ->
+  playGame: () ->
     score = 0
+    innings = [1..9]
 
-    #@displayAddGameReport("<h3>PLAY BALL!!!</h3>")
-    #while innings.length isnt 0
-    #inning = innings.shift()
+    @displayAddGameReport("<h3>PLAY BALL!!!</h3>")
+    while innings.length isnt 0
+      inning = innings.shift()
 
-    if inning < 10
-      @displayAddGameReport("<br><b>#{inning} Inning - Top</b>")
-      side = "away"
-      score = @playInning(score)
-      @displayUpdateScoreboard(score, inning, side)
-      score = 0
+      if inning < 10
+        @displayAddGameReport("<br><b>#{inning} Inning - Top</b>")
+        side = "away"
+        score = @playInning(score)
+        @displayUpdateScoreboard(score, inning, side)
+        score = 0
 
-      @displayAddGameReport("<br><b>#{inning} Inning - Bottom</b>")
-      side = "home"
-      score = @playInning(score)
-      @displayUpdateScoreboard(score, inning, side)
-      score = 0
+        @displayAddGameReport("<br><b>#{inning} Inning - Bottom</b>")
+        side = "home"
+        score = @playInning(score)
+        @displayUpdateScoreboard(score, inning, side)
+        score = 0
 
   # display
   displayAddBall: (balls) ->
