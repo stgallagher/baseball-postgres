@@ -40,3 +40,12 @@ class @Contact
 
   inGroundBallOutRange: (contact) ->
     contact >= CONTACT_GROUND_BALL_OUT_RANGE[0] && contact <= CONTACT_GROUND_BALL_OUT_RANGE[1]
+
+  contactReceived: (contact) ->
+    if @inFoulRange(contact) then return "foul"
+    if @inSingleRange(contact) then return "single"
+    if @inDoubleRange(contact) then return "double"
+    if @inTripleRange(contact) then return "triple"
+    if @inHomeRunRange(contact) then return "home run"
+    if @inPopFlyOutRange(contact) then return "pop fly out"
+    if @inGroundBallOutRange(contact) then return "ground ball out"

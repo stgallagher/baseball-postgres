@@ -35,34 +35,26 @@ class @GameEngine
 
     return result
 
-  atBatResult: (result, score, baseOccupancy) ->
-    switch result
-      when "strikeout" then @displayAddGameReport("Strike out")
-      when "pop fly out" then @displayAddGameReport("Pop out")
-      when "ground ball out" then @displayAddGameReport("Ground out")
-      else
-        @displayAddGameReport(@capitaliseFirstLetter(result))
-        score = @updateBaseOccupancy(baseOccupancy, result, score)
-    return { result: result, score: score }
+  #atBatResult: (result, score, baseOccupancy) ->
+  #  switch result
+  #    when "strikeout" then @displayAddGameReport("Strike out")
+  #    when "pop fly out" then @displayAddGameReport("Pop out")
+  #    when "ground ball out" then @displayAddGameReport("Ground out")
+  #    else
+  #      @displayAddGameReport(@capitaliseFirstLetter(result))
+  #      score = @updateBaseOccupancy(baseOccupancy, result, score)
+  #  return { result: result, score: score }
 
   ballReceived: (balls) ->
-    @displayAddBall(balls + 1)
+    #@displayAddBall(balls + 1)
     return balls + 1
 
   strikeReceived: (contact, strikes) ->
     if contact is "foul" and strikes is 2
       return strikes
-    @displayAddStrike(strikes + 1)
+    #@displayAddStrike(strikes + 1)
     return strikes + 1
 
-  contactReceived: (contact) ->
-    if @inFoulRange(contact) then return "foul"
-    if @inSingleRange(contact) then return "single"
-    if @inDoubleRange(contact) then return "double"
-    if @inTripleRange(contact) then return "triple"
-    if @inHomeRunRange(contact) then return "home run"
-    if @inPopFlyOutRange(contact) then return "pop fly out"
-    if @inGroundBallOutRange(contact) then return "ground ball out"
 
   # play inning
   playInning: (score) ->
@@ -75,9 +67,9 @@ class @GameEngine
       if battingResult.result is "strikeout" or battingResult.result is "pop fly out" or battingResult.result is "ground ball out"
         outs += 1
       score = battingResult.score
-      @displayAddOut()
-      @displayClearBalls()
-      @displayClearStrikes()
+      #@displayAddOut()
+      #@displayClearBalls()
+      #@displayClearStrikes()
 
     return score
 
@@ -85,19 +77,19 @@ class @GameEngine
     score = 0
     innings = [1..9]
 
-    @displayAddGameReport("<h3>PLAY BALL!!!</h3>")
+    #@displayAddGameReport("<h3>PLAY BALL!!!</h3>")
     while innings.length isnt 0
       inning = innings.shift()
 
       if inning < 10
-        @displayAddGameReport("<br><b>#{inning} Inning - Top</b>")
+        #@displayAddGameReport("<br><b>#{inning} Inning - Top</b>")
         side = "away"
         score = @playInning(score)
-        @displayUpdateScoreboard(score, inning, side)
+        #@displayUpdateScoreboard(score, inning, side)
         score = 0
 
-        @displayAddGameReport("<br><b>#{inning} Inning - Bottom</b>")
+        #@displayAddGameReport("<br><b>#{inning} Inning - Bottom</b>")
         side = "home"
         score = @playInning(score)
-        @displayUpdateScoreboard(score, inning, side)
+        #@displayUpdateScoreboard(score, inning, side)
         score = 0
