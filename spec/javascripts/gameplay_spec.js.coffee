@@ -41,65 +41,55 @@ describe "Gameplay", ->
   # updateBaseOccupancy scenarios
   it "homerun with bases loaded", ->
     bases = { first: "manned", second: "manned", third: "manned" }
-    score = 0
-    result = "home run"
-    expect(gp.updateBaseOccupancy(bases, result, score)).toBe(4)
-    expect(bases).toEqual({ first: "empty", second: "empty", third: "empty" })
+    result = "homerun"
+    outcome = gp.updateBaseOccupancy(bases, result)
+    expect(outcome.bases).toEqual({ first: "empty", second: "empty", third: "empty", addedScore: 4 })
 
   it "homerun with man on second", ->
     bases = { first: "empty", second: "manned", third: "empty" }
-    score = 0
-    result = "home run"
-    expect(gp.updateBaseOccupancy(bases, result, score)).toBe(2)
-    expect(bases).toEqual({ first: "empty", second: "empty", third: "empty" })
+    result = "homerun"
+    outcome = gp.updateBaseOccupancy(bases, result)
+    expect(outcome.bases).toEqual({ first: "empty", second: "empty", third: "empty", addedScore: 2  })
 
   it "single with man on third", ->
     bases = { first: "empty", second: "empty", third: "manned" }
-    score = 0
     result = "single"
-    expect(gp.updateBaseOccupancy(bases, result, score)).toBe(1)
-    expect(bases).toEqual({ first: "manned", second: "empty", third: "empty" })
+    outcome = gp.updateBaseOccupancy(bases, result)
+    expect(outcome.bases).toEqual({ first: "manned", second: "empty", third: "empty", addedScore: 1  })
 
   it "single with man on first and second", ->
     bases = { first: "manned", second: "manned", third: "empty" }
-    score = 0
     result = "single"
-    expect(gp.updateBaseOccupancy(bases, result, score)).toBe(0)
-    expect(bases).toEqual({ first: "manned", second: "manned", third: "manned" })
+    outcome = gp.updateBaseOccupancy(bases, result)
+    expect(outcome.bases).toEqual({ first: "manned", second: "manned", third: "manned", addedScore: 0  })
 
   it "double with man on second", ->
     bases = { first: "empty", second: "manned", third: "empty" }
-    score = 0
     result = "double"
-    expect(gp.updateBaseOccupancy(bases, result, score)).toBe(1)
-    expect(bases).toEqual({ first: "empty", second: "manned", third: "empty" })
+    outcome = gp.updateBaseOccupancy(bases, result)
+    expect(outcome.bases).toEqual({ first: "empty", second: "manned", third: "empty", addedScore: 1 })
 
   it "double with man on first", ->
     bases = { first: "manned", second: "empty", third: "empty" }
-    score = 0
     result = "double"
-    expect(gp.updateBaseOccupancy(bases, result, score)).toBe(0)
-    expect(bases).toEqual({ first: "empty", second: "manned", third: "manned" })
+    outcome = gp.updateBaseOccupancy(bases, result)
+    expect(outcome.bases).toEqual({ first: "empty", second: "manned", third: "manned", addedScore: 0 })
 
   it "triple with man on second and third", ->
     bases = { first: "empty", second: "manned", third: "manned" }
-    score = 0
     result = "triple"
-    expect(gp.updateBaseOccupancy(bases, result, score)).toBe(2)
-    expect(bases).toEqual({ first: "empty", second: "empty", third: "manned" })
+    outcome = gp.updateBaseOccupancy(bases, result)
+    expect(outcome.bases).toEqual({ first: "empty", second: "empty", third: "manned", addedScore: 2 })
 
   it "triple hit with man on first", ->
     bases = { first: "manned", second: "empty", third: "empty" }
-    score = 0
     result = "triple"
-    expect(gp.updateBaseOccupancy(bases, result, score)).toBe(1)
-    expect(bases).toEqual({ first: "empty", second: "empty", third: "manned" })
+    outcome = gp.updateBaseOccupancy(bases, result)
+    expect(outcome.bases).toEqual({ first: "empty", second: "empty", third: "manned", addedScore: 1 })
 
   # --- End updateBaseOccupancy scenarios
 
   it "walks act like singles", ->
     bases = { first: "manned", second: "empty", third: "manned" }
-    score = 0
-    expect(gp.updateBaseOccupancy(bases,'walk', score)).toBe(0)
-    expect(bases).toEqual({ first: "manned", second: "manned", third: "manned" })
-
+    outcome = gp.updateBaseOccupancy(bases, "walk")
+    expect(outcome.bases).toEqual({ first: "manned", second: "manned", third: "manned", addedScore: 0})
