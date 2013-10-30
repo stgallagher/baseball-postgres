@@ -8,6 +8,16 @@ $(document).ready ->
 
 class @Gameplay
 
+  atBatResult: (result) ->
+    switch result
+      when "strikeout" then @displayAddGameReport("Strike out")
+      when "pop fly out" then @displayAddGameReport("Pop out")
+      when "ground ball out" then @displayAddGameReport("Ground out")
+      else
+        @displayAddGameReport(@capitaliseFirstLetter(result))
+        score = @updateBaseOccupancy(baseOccupancy, result, score)
+    return { result: result, score: score }
+
   # display
   displayAddBall: (balls) ->
     $("#gameplay-at-bat-ball-indicator#{balls}").removeClass("glyphicon glyphicon-unchecked")

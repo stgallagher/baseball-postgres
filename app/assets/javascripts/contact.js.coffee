@@ -46,6 +46,6 @@ class @Contact
     if @inSingleRange(contact) then return "single"
     if @inDoubleRange(contact) then return "double"
     if @inTripleRange(contact) then return "triple"
-    if @inHomeRunRange(contact) then return "home run"
+    if @inHomeRunRange(contact) then return "homerun"
     if @inPopFlyOutRange(contact) then return "pop fly out"
     if @inGroundBallOutRange(contact) then return "ground ball out"

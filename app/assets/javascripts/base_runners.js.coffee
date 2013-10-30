@@ -20,6 +20,9 @@ class @BaseRunners
 
     return { bases: baseOccupancy, addedScore: baseOccupancy.addedScore }
 
+  basesEmpty: ->
+    return { first: "empty", second: "empty", third: "empty", addedScore: 0 }
+
   BASE_RUNNERS =
       basesLoaded:    first: "manned", second: "manned", third: "manned"
       firstAndSecond: first: "manned", second: "manned", third: "empty"

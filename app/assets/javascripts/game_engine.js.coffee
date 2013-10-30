@@ -1,95 +1,51 @@
 class @GameEngine
 
-  # At-bat
-  atbat: ->
-    balls = 0
-    strikes = 0
-    contact = null
-    atbat = true
+  constructor: (display) ->
+    @inning = 1
+    @side = "top"
+    @score = 0
+    @outs = 0
+    @display = display
+    @pitcher = new Pitching()
+    @contact = new Contact()
+    @baseRunners = new BaseRunners()
+    @atBat = new AtBat(@pitcher, @contact, @baseRunners)
 
-    while atbat
-      result = @pitchResult(@pitch())
-      #@displayAddGameReport("@atbat: Pitch Result -> result = #{result}")
-      switch result
-        when "ball" then balls = @ballReceived(balls)
-        when "strike" then strikes = @strikeReceived(contact, strikes)
-        when "contact" then contact = @contactReceived(@contact())
+  finishGame: ->
+    return display.gameFinished()
 
-      if balls is 4
-        result = "walk"
-        atbat = false
+  makePitch: ->
+    return @finishGame() if @gameFinished()
+    @atBat = @nextBatter() if @atBat.complete
+    @atBat.makePitch()
+    @display.updateDisplay(@atBat)
 
-      if strikes is 3
-        result = "strikeout"
-        atbat = false
+  nextBatter: ->
+    if @atBat.isOut
+      @batterOut()
+    else
+      @batterHits()
+    return new AtBat(@pitcher, @contact, @baseRunners, @atBat.baseOccupancy)
 
-      if contact is "foul"
-        strikes = @strikeReceived(contact, strikes)
+  batterOut: ->
+    @outs += 1
+    @retireSide() if @outs is 3
+    @display.updateDisplay(@atBat)
 
-      if contact? and contact isnt "foul"
-        result = contact
-        atbat = false
-      contact = null
+  batterHits: ->
+    @score += @atBat.baseOccupancy.addedScore
+    @display.updateDisplay(@atBat)
 
-      #@displayAddGameReport("@atbat: balls = #{balls}, strikes = #{strikes}, contact = #{contact}")
+  retireSide: ->
+    if @inning is 9 and @side is "top"
+      return @finishGame()
+    @display.updateDisplay(score, @inning, @side)
+    if @side is "top"
+      @side = "bottom"
+    else if @side is "bottom"
+      @inning += 1
+    @score = 0
+    @outs = 0
 
-    return result
-
-  #atBatResult: (result, score, baseOccupancy) ->
-  #  switch result
-  #    when "strikeout" then @displayAddGameReport("Strike out")
-  #    when "pop fly out" then @displayAddGameReport("Pop out")
-  #    when "ground ball out" then @displayAddGameReport("Ground out")
-  #    else
-  #      @displayAddGameReport(@capitaliseFirstLetter(result))
-  #      score = @updateBaseOccupancy(baseOccupancy, result, score)
-  #  return { result: result, score: score }
-
-  ballReceived: (balls) ->
-    #@displayAddBall(balls + 1)
-    return balls + 1
-
-  strikeReceived: (contact, strikes) ->
-    if contact is "foul" and strikes is 2
-      return strikes
-    #@displayAddStrike(strikes + 1)
-    return strikes + 1
-
-
-  # play inning
-  playInning: (score) ->
-    outs = 0
-    baseOccupancy = { first: "empty", second: "empty", third: "empty" }
-
-    while outs < 3
-      result = @atbat()
-      battingResult = @atBatResult(result, score, baseOccupancy)
-      if battingResult.result is "strikeout" or battingResult.result is "pop fly out" or battingResult.result is "ground ball out"
-        outs += 1
-      score = battingResult.score
-      #@displayAddOut()
-      #@displayClearBalls()
-      #@displayClearStrikes()
-
-    return score
-
-  playGame: () ->
-    score = 0
-    innings = [1..9]
-
-    #@displayAddGameReport("<h3>PLAY BALL!!!</h3>")
-    while innings.length isnt 0
-      inning = innings.shift()
-
-      if inning < 10
-        #@displayAddGameReport("<br><b>#{inning} Inning - Top</b>")
-        side = "away"
-        score = @playInning(score)
-        #@displayUpdateScoreboard(score, inning, side)
-        score = 0
-
-        #@displayAddGameReport("<br><b>#{inning} Inning - Bottom</b>")
-        side = "home"
-        score = @playInning(score)
-        #@displayUpdateScoreboard(score, inning, side)
-        score = 0
+  gameFinished: ->
+    @inning > 9
