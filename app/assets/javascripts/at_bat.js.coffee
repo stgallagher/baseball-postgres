@@ -1,5 +1,5 @@
 class @AtBat
-  constructor: (@pitcher, @contact, @baseRunner, @baseOccupancy) ->
+  constructor: (@pitcher, @contact, @baseRunner, @display, @baseOccupancy) ->
     @balls = 0
     @strikes = 0
     @complete = null
@@ -7,6 +7,7 @@ class @AtBat
     @isOut = false
 
   atbat: (pitch) ->
+    console.log("IN GAME ENGINE::atbat -> @baseOccupancy = #{JSON.stringify(@baseOccupancy)}")
     switch pitch
       when "ball" then @ballReceived()
       when "strike" then @strikeReceived()
@@ -22,24 +23,33 @@ class @AtBat
 
   batterMadeContact:(contact) ->
     switch contact
-      when "strikeout" then @isOut = true
-      when "pop fly out" then @isOut = true
-      when "ground ball out" then @isOut = true
+      when "strikeout"
+        @isOut = true
+        @complete = "strikeout"
+      when "pop fly out"
+        @isOut = true
+        @complete = "pop fly out"
+      when "ground ball out"
+        @isOut = true
+        @complete = "ground ball out"
       else
-        @baseOccupancy = @baseRunner(@baseOccupancy, contact)
+        @baseOccupancy = @baseRunner.updateBaseOccupancy(@baseOccupancy, contact)
 
   makePitch: ->
-    @complete = @atBat(@pitcher.pitchResult(@pitcher.pitch()))
+    @complete = @atbat(@pitcher.pitchResult(@pitcher.pitch()))
 
   ballReceived: ->
-    @balls + 1
+    @balls += 1
+    @display.addGameReport("ball")
 
   strikeReceived: (contact) ->
     unless contact is "foul" and @strikes is 2
-      @strikes + 1
+      @strikes += 1
+      @display.addGameReport("strike")
 
   walkOrStrikeOutCheck: ->
     if @balls is 4
+      @baseOccupancy = @baseRunner.updateBaseOccupancy(@baseOccupancy, "walk")
       @complete = "walk"
     else if @strikes is 3
       @complete = "strikeout"

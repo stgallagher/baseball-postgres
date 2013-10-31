@@ -1,7 +1,9 @@
 class @BaseRunners
 
   updateBaseOccupancy: (baseOccupancy, result) ->
+    console.log("IN BASERUNNER::updateBaseOccupancy -> baseOccupancy = #{baseOccupancy}, result = #{result}")
     baseRunners = _.pick(baseOccupancy, 'first', 'second', 'third')
+    console.log("IN BASERUNNER:: -> baseRunners = #{JSON.stringify(baseRunners)}")
 
     if _.isEqual(baseRunners, BASE_RUNNERS.basesLoaded)
         baseOccupancy = AT_BAT_RESULTS[result].basesLoaded
@@ -18,7 +20,7 @@ class @BaseRunners
     else if _.isEqual(baseRunners, BASE_RUNNERS.third)
         baseOccupancy = AT_BAT_RESULTS[result].third
 
-    return { bases: baseOccupancy, addedScore: baseOccupancy.addedScore }
+    return baseOccupancy
 
   basesEmpty: ->
     return { first: "empty", second: "empty", third: "empty", addedScore: 0 }

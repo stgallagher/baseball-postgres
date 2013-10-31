@@ -1,33 +1,45 @@
 #= require underscore
 
 $(document).ready ->
-  game = new Gameplay()
+  game = new GameEngine()
 
   $("#start-button").on "click", ->
-    game.playGame()
+    game.makePitch()
 
 class @Gameplay
 
-  atBatResult: (result) ->
-    switch result
-      when "strikeout" then @displayAddGameReport("Strike out")
-      when "pop fly out" then @displayAddGameReport("Pop out")
-      when "ground ball out" then @displayAddGameReport("Ground out")
-      else
-        @displayAddGameReport(@capitaliseFirstLetter(result))
-        score = @updateBaseOccupancy(baseOccupancy, result, score)
-    return { result: result, score: score }
+  gameFinished: ->
+    @addGameReport("GAME OVER, MAN")
 
-  # display
-  displayAddBall: (balls) ->
+  updateDisplay: (atBat) ->
+    unless atBat.balls is 0
+      balls = [1..atBat.balls]
+      for ball in balls
+        @addBall(ball)
+      #_.each(balls, (ball) -> @addBall(ball))
+    unless atBat.strikes is 0
+      strikes = [1..atBat.strikes]
+      for strike in strikes
+        @addStrike(strike)
+     # _.each(strikes, (strike) -> @addStrike(strike))
+     @updateBaseOccupancy(atBat.baseOccupancy)
+     @addGameReport(JSON.stringify(atBat.complete)) if atBat.complete
+
+  updateOuts: (outs) ->
+      out = [1..outs]
+      for o in out
+        @addOut(o)
+      #_.each(out, (num) -> @addOut(num))
+
+  addBall: (balls) ->
     $("#gameplay-at-bat-ball-indicator#{balls}").removeClass("glyphicon glyphicon-unchecked")
     $("#gameplay-at-bat-ball-indicator#{balls}").addClass("glyphicon glyphicon-check")
 
-  displayAddStrike: (strikes) ->
+  addStrike: (strikes) ->
     $("#gameplay-at-bat-strike-indicator#{strikes}").removeClass("glyphicon glyphicon-unchecked")
     $("#gameplay-at-bat-strike-indicator#{strikes}").addClass("glyphicon glyphicon-check")
 
-  displayAddOut: ->
+  addOut: ->
     if $("#gameplay-at-bat-out-indicator1").hasClass("glyphicon-unchecked")
       $("#gameplay-at-bat-out-indicator1").removeClass("glyphicon glyphicon-unchecked")
       $("#gameplay-at-bat-out-indicator1").addClass("glyphicon glyphicon-check")
@@ -35,7 +47,12 @@ class @Gameplay
       $("#gameplay-at-bat-out-indicator2").removeClass("glyphicon glyphicon-unchecked")
       $("#gameplay-at-bat-out-indicator2").addClass("glyphicon glyphicon-check")
 
-  displayClearBalls: ->
+  clearAll: ->
+    @clearBalls()
+    @clearStrikes()
+    @clearOuts()
+
+  clearBalls: ->
     $("#gameplay-at-bat-ball-indicator1").removeClass("glyphicon glyphicon-check")
     $("#gameplay-at-bat-ball-indicator2").removeClass("glyphicon glyphicon-check")
     $("#gameplay-at-bat-ball-indicator3").removeClass("glyphicon glyphicon-check")
@@ -43,30 +60,30 @@ class @Gameplay
     $("#gameplay-at-bat-ball-indicator2").addClass("glyphicon glyphicon-unchecked")
     $("#gameplay-at-bat-ball-indicator3").addClass("glyphicon glyphicon-unchecked")
 
-  displayClearStrikes: ->
+  clearStrikes: ->
     $("#gameplay-at-bat-strike-indicator1").removeClass("glyphicon glyphicon-check")
     $("#gameplay-at-bat-strike-indicator2").removeClass("glyphicon glyphicon-check")
     $("#gameplay-at-bat-strike-indicator1").addClass("glyphicon glyphicon-unchecked")
     $("#gameplay-at-bat-strike-indicator2").addClass("glyphicon glyphicon-unchecked")
 
-  displayClearOuts: ->
+  clearOuts: ->
     $("#gameplay-at-bat-out-indicator1").removeClass("glyphicon glyphicon-check")
     $("#gameplay-at-bat-out-indicator2").removeClass("glyphicon glyphicon-check")
     $("#gameplay-at-bat-out-indicator1").addClass("glyphicon glyphicon-unchecked")
     $("#gameplay-at-bat-out-indicator2").addClass("glyphicon glyphicon-unchecked")
 
-  displayAddGameReport: (report) ->
-    $("#gameplay-game-report").append(report + "<br>")
-
-  displayUpdateScoreboard: (score, inning, side) ->
+  updateScoreboard: (score, inning, side) ->
     $("#gameplay-scoreboard-#{side}-inning-#{inning}").text(score)
-    @displayUpdateScoreboardTotal(score, inning, side)
+    @updateScoreboardTotal(score, inning, side)
 
-  displayUpdateScoreboardTotal: (score, inning, side) ->
+  updateScoreboardTotal: (score, inning, side) ->
     currentTotal = parseInt($("#gameplay-scoreboard-#{side}-total").text(), 10)
     $("#gameplay-scoreboard-#{side}-total").text(score + currentTotal)
 
-  displayUpdateBaseOccupancy: (bases) ->
+  updateBaseOccupancy: (bases) ->
+    console.log("GAMEPLAY::updateBaseOccupancy -> bases = #{JSON.stringify(bases)}")
+
+
     $("#baseball-field-first-base-runner").show() if bases.first is "manned"
     $("#baseball-field-first-base-runner").hide() if bases.first is "empty"
     $("#baseball-field-second-base-runner").show() if bases.second is "manned"
@@ -77,3 +94,6 @@ class @Gameplay
   # display helpers
   capitaliseFirstLetter: (string) ->
     string.charAt(0).toUpperCase() + string.slice(1)
+
+  addGameReport: (report) ->
+    $("#gameplay-game-report").append(report + "<br>")
