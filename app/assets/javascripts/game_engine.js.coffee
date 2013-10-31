@@ -24,15 +24,13 @@ class @GameEngine
     @atBat = @nextBatter() if @atBat.complete
     @atBat.makePitch()
     @display.updateDisplay(@atBat)
+    @display.updateScoreboard(@score, @inning, @side)
 
   nextBatter: ->
-    console.log("IN GAME ENGINE::nextBatter -> @atBat = #{JSON.stringify(@atBat)}")
-    console.log("IN GAME ENGINE::nextBatter -> @atBat.isOut = #{@atBat.isOut}")
     if @atBat.isOut
       nextBatter = @batterOut()
     else
       @batterHits()
-      #console.log("IN GAME ENGINE::nextBatter -> @atBat.baseOccupancy = #{JSON.stringify(@atBat.baseOccupancy)}")
       nextBatter = new AtBat(@pitcher, @contact, @baseRunners, @display, @atBat.baseOccupancy)
     @display.clearBatter()
     @display.addGameReport("NextBatter<br>-----------", true)
@@ -40,7 +38,6 @@ class @GameEngine
 
   batterOut: ->
     @outs += 1
-    console.log("IN GAME ENGINE::batterOut -> @outs = #{@outs}")
     @display.updateOuts()
     if @outs is 3
       @retireSide()
@@ -52,12 +49,10 @@ class @GameEngine
 
   batterHits: ->
     @score += @atBat.baseOccupancy.addedScore
-    #@display.updateDisplay(@atBat)
 
   retireSide: ->
     if @inning is 10 and @side is "top"
       return @finishGame()
-    @display.updateScoreboard(@score, @inning, @side)
     if @side is "top"
       @side = "bottom"
       @display.addGameReport("<b>Inning #{@inning} - #{@side}</b><br><b>-----------------</b>", true)

@@ -1,9 +1,7 @@
 class @BaseRunners
 
   updateBaseOccupancy: (baseOccupancy, result) ->
-    console.log("IN BASERUNNER::updateBaseOccupancy -> baseOccupancy = #{baseOccupancy}, result = #{result}")
     baseRunners = _.pick(baseOccupancy, 'first', 'second', 'third')
-    console.log("IN BASERUNNER:: -> baseRunners = #{JSON.stringify(baseRunners)}")
 
     if _.isEqual(baseRunners, BASE_RUNNERS.basesLoaded)
         baseOccupancy = AT_BAT_RESULTS[result].basesLoaded

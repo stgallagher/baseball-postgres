@@ -7,7 +7,6 @@ class @AtBat
     @isOut = false
 
   atbat: (pitch) ->
-    #console.log("IN GAME ENGINE::atbat -> @baseOccupancy = #{JSON.stringify(@baseOccupancy)}")
     switch pitch
       when "ball" then @ballReceived()
       when "strike" then @strikeReceived()
@@ -34,7 +33,6 @@ class @AtBat
         @complete = "ground ball out"
       else
         @baseOccupancy = @baseRunner.updateBaseOccupancy(@baseOccupancy, contact)
-        console.log("IN ATBAT::batterMadeContact -> @baseOccupancy = #{JSON.stringify(@baseOccupancy)}")
         @complete = contact
 
   makePitch: ->

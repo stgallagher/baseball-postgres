@@ -24,10 +24,7 @@ class @Gameplay
       for strike in strikes
         @addStrike(strike)
     @updateBaseOccupancy(atBat.baseOccupancy)
-    #console.log("IN GAMEPLAY::updateDisplay -> atBat.complete = #{atBat.complete}")
     if atBat.complete and (atBat.complete isnt /out/.test(atBat.complete))
-      #console.log("IN GAMEPLAY::updateDisplay -> /out/.test(atBat.complete) = #{/out/.test(atBat.complete)}")
-      #console.log("IN GAMEPLAY::updateDisplay -> INSIDE IF atbat.complete")
       @addGameReport(atBat.complete, true)
 
   updateOuts: ->
@@ -83,11 +80,23 @@ class @Gameplay
     @updateScoreboardTotal(score, inning, side)
 
   updateScoreboardTotal: (score, inning, side) ->
-    currentTotal = parseInt($("#gameplay-scoreboard-#{side}-total").text(), 10)
-    $("#gameplay-scoreboard-#{side}-total").text(score + currentTotal)
+    innings = [1..inning]
+    totalTopScore = 0
+    totalBottomScore = 0
+
+    for inn in innings
+      topScore = parseInt($("#gameplay-scoreboard-top-inning-#{inn}").text(), 10)
+      if topScore
+        totalTopScore += topScore
+    for inn in innings
+      bottomScore = parseInt($("#gameplay-scoreboard-bottom-inning-#{inn}").text(), 10)
+      if bottomScore
+        totalBottomScore += bottomScore
+
+    $("#gameplay-scoreboard-top-total").text(totalTopScore)
+    $("#gameplay-scoreboard-bottom-total").text(totalBottomScore)
 
   updateBaseOccupancy: (bases) ->
-    #console.log("GAMEPLAY::updateBaseOccupancy -> bases = #{JSON.stringify(bases)}")
     $("#baseball-field-first-base-runner").show() if bases.first is "manned"
     $("#baseball-field-first-base-runner").hide() if bases.first is "empty"
     $("#baseball-field-second-base-runner").show() if bases.second is "manned"
@@ -103,10 +112,8 @@ class @Gameplay
 
     @reporter.append(
       if addBreak
-        console.log("IN GAMEPLAY::addGameReport - in addBreak branch")
         "<br>" + report + "<br>"
       else if report?
-        console.log("IN GAMEPLAY::addGameReport - in else branch")
         report + ", "
     )
     @reporter.animate({scrollTop: @height}, 500)
