@@ -19,6 +19,8 @@ class @BaseRunners
         baseOccupancy = AT_BAT_RESULTS[result].second
     else if _.isEqual(baseRunners, BASE_RUNNERS.third)
         baseOccupancy = AT_BAT_RESULTS[result].third
+    else if _.isEqual(baseRunners, BASE_RUNNERS.empty)
+        baseOccupancy = AT_BAT_RESULTS[result].empty
 
     return baseOccupancy
 

@@ -242,5 +242,5 @@ th.gameplay-scoreboard-team-names  {
 #gameplay-game-report {
   height: 500px;
   border: solid 1px black;
-  overflow: scroll;
+  overflow-y: auto;
 }

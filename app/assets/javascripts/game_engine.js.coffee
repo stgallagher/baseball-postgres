@@ -13,8 +13,8 @@ class @GameEngine
     @initiateGame()
 
   initiateGame: ->
-    @display.addGameReport("Play ball")
-    @display.addGameReport("Inning #{@inning} - #{@side}")
+    @display.addGameReport("Play ball", true)
+    @display.addGameReport("<b>Inning #{@inning} - #{@side}</b><br><b>-----------------</b>", true)
 
   finishGame: ->
     return @display.gameFinished()
@@ -26,28 +26,33 @@ class @GameEngine
     @display.updateDisplay(@atBat)
 
   nextBatter: ->
+    console.log("IN GAME ENGINE::nextBatter -> @atBat = #{JSON.stringify(@atBat)}")
+    console.log("IN GAME ENGINE::nextBatter -> @atBat.isOut = #{@atBat.isOut}")
     if @atBat.isOut
       nextBatter = @batterOut()
     else
       @batterHits()
-      console.log("IN GAME ENGINE::nextBatter -> @atBat.baseOccupancy = #{JSON.stringify(@atBat.baseOccupancy)}")
+      #console.log("IN GAME ENGINE::nextBatter -> @atBat.baseOccupancy = #{JSON.stringify(@atBat.baseOccupancy)}")
       nextBatter = new AtBat(@pitcher, @contact, @baseRunners, @display, @atBat.baseOccupancy)
+    @display.clearBatter()
+    @display.addGameReport("NextBatter<br>-----------", true)
     @atBat = nextBatter
 
   batterOut: ->
     @outs += 1
-    @display.updateOuts(@outs)
+    console.log("IN GAME ENGINE::batterOut -> @outs = #{@outs}")
+    @display.updateOuts()
     if @outs is 3
       @retireSide()
       @display.clearAll()
       return new AtBat(@pitcher, @contact, @baseRunners, @display)
     else
-      @display.updateDisplay(@atBat)
+      #@display.updateDisplay(@atBat)
       return new AtBat(@pitcher, @contact, @baseRunners, @display, @atBat.baseOccupancy)
 
   batterHits: ->
     @score += @atBat.baseOccupancy.addedScore
-    @display.updateDisplay(@atBat)
+    #@display.updateDisplay(@atBat)
 
   retireSide: ->
     if @inning is 10 and @side is "top"
@@ -55,10 +60,11 @@ class @GameEngine
     @display.updateScoreboard(@score, @inning, @side)
     if @side is "top"
       @side = "bottom"
-      @display.addGameReport("Inning #{@inning} - #{@side}")
+      @display.addGameReport("<b>Inning #{@inning} - #{@side}</b><br><b>-----------------</b>", true)
     else if @side is "bottom"
       @inning += 1
-      @display.addGameReport("Inning #{@inning} - #{@side}")
+      @side = "top"
+      @display.addGameReport("<b>Inning #{@inning} - #{@side}</b><br><b>-----------------</b>", true)
     @score = 0
     @outs = 0
 

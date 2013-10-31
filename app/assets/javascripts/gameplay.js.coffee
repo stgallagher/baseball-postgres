@@ -7,29 +7,31 @@ $(document).ready ->
     game.makePitch()
 
 class @Gameplay
+  constructor: ->
+    @reporter = $("#gameplay-game-report")
+    @height = $("#gameplay-game-report").height()
 
   gameFinished: ->
-    @addGameReport("GAME OVER, MAN")
+    @addGameReport("GAME OVER, MAN", true)
 
   updateDisplay: (atBat) ->
     unless atBat.balls is 0
       balls = [1..atBat.balls]
       for ball in balls
         @addBall(ball)
-      #_.each(balls, (ball) -> @addBall(ball))
     unless atBat.strikes is 0
       strikes = [1..atBat.strikes]
       for strike in strikes
         @addStrike(strike)
-     # _.each(strikes, (strike) -> @addStrike(strike))
-     @updateBaseOccupancy(atBat.baseOccupancy)
-     @addGameReport(JSON.stringify(atBat.complete)) if atBat.complete
+    @updateBaseOccupancy(atBat.baseOccupancy)
+    #console.log("IN GAMEPLAY::updateDisplay -> atBat.complete = #{atBat.complete}")
+    if atBat.complete and (atBat.complete isnt /out/.test(atBat.complete))
+      #console.log("IN GAMEPLAY::updateDisplay -> /out/.test(atBat.complete) = #{/out/.test(atBat.complete)}")
+      #console.log("IN GAMEPLAY::updateDisplay -> INSIDE IF atbat.complete")
+      @addGameReport(atBat.complete, true)
 
-  updateOuts: (outs) ->
-      out = [1..outs]
-      for o in out
-        @addOut(o)
-      #_.each(out, (num) -> @addOut(num))
+  updateOuts: ->
+    @addOut()
 
   addBall: (balls) ->
     $("#gameplay-at-bat-ball-indicator#{balls}").removeClass("glyphicon glyphicon-unchecked")
@@ -51,6 +53,10 @@ class @Gameplay
     @clearBalls()
     @clearStrikes()
     @clearOuts()
+
+  clearBatter: ->
+    @clearBalls()
+    @clearStrikes()
 
   clearBalls: ->
     $("#gameplay-at-bat-ball-indicator1").removeClass("glyphicon glyphicon-check")
@@ -81,9 +87,7 @@ class @Gameplay
     $("#gameplay-scoreboard-#{side}-total").text(score + currentTotal)
 
   updateBaseOccupancy: (bases) ->
-    console.log("GAMEPLAY::updateBaseOccupancy -> bases = #{JSON.stringify(bases)}")
-
-
+    #console.log("GAMEPLAY::updateBaseOccupancy -> bases = #{JSON.stringify(bases)}")
     $("#baseball-field-first-base-runner").show() if bases.first is "manned"
     $("#baseball-field-first-base-runner").hide() if bases.first is "empty"
     $("#baseball-field-second-base-runner").show() if bases.second is "manned"
@@ -95,5 +99,15 @@ class @Gameplay
   capitaliseFirstLetter: (string) ->
     string.charAt(0).toUpperCase() + string.slice(1)
 
-  addGameReport: (report) ->
-    $("#gameplay-game-report").append(report + "<br>")
+  addGameReport: (report, addBreak) ->
+
+    @reporter.append(
+      if addBreak
+        console.log("IN GAMEPLAY::addGameReport - in addBreak branch")
+        "<br>" + report + "<br>"
+      else if report?
+        console.log("IN GAMEPLAY::addGameReport - in else branch")
+        report + ", "
+    )
+    @reporter.animate({scrollTop: @height}, 500)
+    @height += @reporter.height()
