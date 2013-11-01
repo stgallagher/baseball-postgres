@@ -2,9 +2,11 @@
 
 $(document).ready ->
   game = new GameEngine()
+  simulator = new Simulator(game)
 
   $("#start-button").on "click", ->
-    game.makePitch()
+    #game.makePitch()
+    simulator.simulateGame()
 
 class @Gameplay
   constructor: ->
@@ -12,7 +14,8 @@ class @Gameplay
     @height = $("#gameplay-game-report").height()
 
   gameFinished: ->
-    @addGameReport("GAME OVER, MAN", true)
+    @reporter.scrollTop(0)
+    @addGameReport("Game Over", "gameover")
 
   updateDisplay: (atBat) ->
     unless atBat.balls is 0
@@ -25,7 +28,7 @@ class @Gameplay
         @addStrike(strike)
     @updateBaseOccupancy(atBat.baseOccupancy)
     if atBat.complete and (atBat.complete isnt /out/.test(atBat.complete))
-      @addGameReport(atBat.complete, true)
+      @addGameReport(@capitaliseFirstLetter(atBat.complete), "result")
 
   updateOuts: ->
     @addOut()
@@ -76,7 +79,7 @@ class @Gameplay
     $("#gameplay-at-bat-out-indicator2").addClass("glyphicon glyphicon-unchecked")
 
   updateScoreboard: (score, inning, side) ->
-    $("#gameplay-scoreboard-#{side}-inning-#{inning}").text(score)
+    $("#gameplay-scoreboard-#{side.toLowerCase()}-inning-#{inning}").text(score)
     @updateScoreboardTotal(score, inning, side)
 
   updateScoreboardTotal: (score, inning, side) ->
@@ -108,13 +111,17 @@ class @Gameplay
   capitaliseFirstLetter: (string) ->
     string.charAt(0).toUpperCase() + string.slice(1)
 
-  addGameReport: (report, addBreak) ->
+  addGameReport: (report, option) ->
+    switch option
+      when "doubleBreak" then @reporter.append("<br>" + report + "<br>")
+      when "hyphenated" then @reporter.append('<span id="gameplay-game-report-balls-strikes">' + report + ' | </span>')
+      when "bold" then @reporter.append("<b>" + report + "</b>")
+      when "heading" then @reporter.append("<h2>" + report + "</h2>")
+      when "emphasis" then @reporter.append("<h4>" + report + "</h4><br>")
+      when "outline" then @reporter.append('<div id="gameplay-game-report-outline">' + report + '</div><br>')
+      when "nextBatter" then @reporter.append('<div id="gameplay-game-report-next-batter">' + report + '</div>')
+      when "result" then @reporter.append('<div id="gameplay-game-report-result">' + report + '</div>')
+      when "gameover" then @reporter.append('<div id="gameplay-game-report-game-over">' + report + '</div>')
 
-    @reporter.append(
-      if addBreak
-        "<br>" + report + "<br>"
-      else if report?
-        report + ", "
-    )
-    @reporter.animate({scrollTop: @height}, 500)
-    @height += @reporter.height()
+    #@reporter.animate({scrollTop: @height}, "fast")
+    #@height += @reporter.height()

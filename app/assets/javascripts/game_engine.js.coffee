@@ -2,7 +2,7 @@ class @GameEngine
 
   constructor: ->
     @inning = 1
-    @side = "top"
+    @side = "Top"
     @score = 0
     @outs = 0
     @display = new Gameplay()
@@ -11,20 +11,26 @@ class @GameEngine
     @baseRunners = new BaseRunners()
     @atBat = new AtBat(@pitcher, @contact, @baseRunners, @display)
     @initiateGame()
+    @gameInitiated = false
+    @gameOver = false
 
   initiateGame: ->
-    @display.addGameReport("Play ball", true)
-    @display.addGameReport("<b>Inning #{@inning} - #{@side}</b><br><b>-----------------</b>", true)
+    @display.addGameReport("Play ball", "heading")
 
   finishGame: ->
+    @gameOver = true
     return @display.gameFinished()
 
   makePitch: ->
-    return @finishGame() if @gameFinished()
-    @atBat = @nextBatter() if @atBat.complete
-    @atBat.makePitch()
-    @display.updateDisplay(@atBat)
-    @display.updateScoreboard(@score, @inning, @side)
+    unless @gameInitiated
+      @display.addGameReport("Inning #{@inning} - #{@side}", "outline")
+      @display.addGameReport("First Batter", "nextBatter")
+      @gameInitiated = true
+    unless @gameOver
+      @atBat.makePitch()
+      @display.updateDisplay(@atBat)
+      @atBat = @nextBatter() if @atBat.complete
+      @display.updateScoreboard(@score, @inning, @side)
 
   nextBatter: ->
     if @atBat.isOut
@@ -33,8 +39,10 @@ class @GameEngine
       @batterHits()
       nextBatter = new AtBat(@pitcher, @contact, @baseRunners, @display, @atBat.baseOccupancy)
     @display.clearBatter()
-    @display.addGameReport("NextBatter<br>-----------", true)
+    unless @gameFinished()
+      @display.addGameReport("Next Batter", "nextBatter")
     @atBat = nextBatter
+
 
   batterOut: ->
     @outs += 1
@@ -44,24 +52,23 @@ class @GameEngine
       @display.clearAll()
       return new AtBat(@pitcher, @contact, @baseRunners, @display)
     else
-      #@display.updateDisplay(@atBat)
       return new AtBat(@pitcher, @contact, @baseRunners, @display, @atBat.baseOccupancy)
 
   batterHits: ->
     @score += @atBat.baseOccupancy.addedScore
 
   retireSide: ->
-    if @inning is 10 and @side is "top"
+    if @inning is 9 and @side is "Bottom"
       return @finishGame()
-    if @side is "top"
-      @side = "bottom"
-      @display.addGameReport("<b>Inning #{@inning} - #{@side}</b><br><b>-----------------</b>", true)
-    else if @side is "bottom"
+    if @side is "Top"
+      @side = "Bottom"
+      @display.addGameReport("Inning #{@inning} - #{@side}<br>", "outline")
+    else if @side is "Bottom"
       @inning += 1
-      @side = "top"
-      @display.addGameReport("<b>Inning #{@inning} - #{@side}</b><br><b>-----------------</b>", true)
+      @side = "Top"
+      @display.addGameReport("Inning #{@inning} - #{@side}<br>", "outline")
     @score = 0
     @outs = 0
 
   gameFinished: ->
-    @inning > 9
+    @inning is 9 and @side is "Bottom" and @outs is 3

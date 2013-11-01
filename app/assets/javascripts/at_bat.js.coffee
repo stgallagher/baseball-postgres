@@ -24,35 +24,35 @@ class @AtBat
     switch contact
       when "strikeout"
         @isOut = true
-        @complete = "strikeout"
+        @complete = "Strikeout"
       when "pop fly out"
         @isOut = true
-        @complete = "pop fly out"
+        @complete = "Pop Fly Out"
       when "ground ball out"
         @isOut = true
-        @complete = "ground ball out"
+        @complete = "Ground Ball Out"
       else
         @baseOccupancy = @baseRunner.updateBaseOccupancy(@baseOccupancy, contact)
         @complete = contact
 
   makePitch: ->
-    @complete = @atbat(@pitcher.pitchResult(@pitcher.pitch()))
+    @atbat(@pitcher.pitchResult(@pitcher.pitch()))
 
   ballReceived: ->
     @balls += 1
-    @display.addGameReport("ball")
+    @display.addGameReport("Ball", "hyphenated")
 
   strikeReceived: (contact) ->
     unless contact is "foul" and @strikes is 2
       @strikes += 1
-      @display.addGameReport("strike")
+      @display.addGameReport("Strike", "hyphenated")
 
   walkOrStrikeOutCheck: ->
     if @balls is 4
       @baseOccupancy = @baseRunner.updateBaseOccupancy(@baseOccupancy, "walk")
-      @complete = "walk"
+      @complete = "Walk"
     else if @strikes is 3
       @isOut = true
-      @complete = "strikeout"
+      @complete = "Strikeout"
     else
       @complete = null
