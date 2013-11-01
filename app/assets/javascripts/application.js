@@ -15,5 +15,6 @@
 //= require turbolinks
 //= require bootstrap
 //= require underscore
+//= require Faker
 //= require gameplay
 //= require_tree .

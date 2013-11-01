@@ -6,7 +6,8 @@ describe "AtBat", ->
     p = new Pitching()
     c = new Contact()
     br = new BaseRunners()
-    @ab = new AtBat(p, c, br)
+    d = new Gameplay()
+    @ab = new AtBat(p, c, br, d)
 
   it "#ballReceived increments ball count", ->
     @ab.ballReceived()
@@ -35,7 +36,7 @@ describe "AtBat", ->
   it "#batterMadeContact: if contact is a strikeout, batter is out, atbat is complete", ->
     @ab.batterMadeContact("strikeout")
     expect(@ab.isOut).toEqual(true)
-    expect(@ab.complete).toEqual("strikeout")
+    expect(@ab.complete).toEqual("Strikeout")
 
   it "#batterMadeContact: if contact is single, bases are updated", ->
     @ab.baseOccupancy = { first: "manned", second: "manned", third: "manned" }
@@ -62,4 +63,4 @@ describe "AtBat", ->
     expect(@ab.complete).toEqual(null)
     @ab.balls = 4
     @ab.walkOrStrikeOutCheck()
-    expect(@ab.complete).toEqual("walk")
+    expect(@ab.complete).toEqual("Walk")
