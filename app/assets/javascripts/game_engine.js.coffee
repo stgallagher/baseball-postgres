@@ -1,12 +1,10 @@
 class @GameEngine
 
-  constructor: () ->
+  constructor: (@homeTeam, @awayTeam) ->
     @inning = 1
     @side = "Top"
     @score = 0
     @outs = 0
-    @homeTeam = new Team()
-    @awayTeam = new Team()
     @display = new Gameplay()
     @pitcher = new Pitching()
     @contact = new Contact()
