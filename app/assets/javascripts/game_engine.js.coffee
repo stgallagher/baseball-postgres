@@ -1,10 +1,12 @@
 class @GameEngine
 
-  constructor: ->
+  constructor: () ->
     @inning = 1
     @side = "Top"
     @score = 0
     @outs = 0
+    @homeTeam = new Team()
+    @awayTeam = new Team()
     @display = new Gameplay()
     @pitcher = new Pitching()
     @contact = new Contact()
@@ -13,6 +15,8 @@ class @GameEngine
     @initiateGame()
     @gameInitiated = false
     @gameOver = false
+    @batter = null
+    @homeFirstBatterNotUpYet = true
 
   initiateGame: ->
     @display.addGameReport("Play ball", "heading")
@@ -25,6 +29,10 @@ class @GameEngine
     unless @gameInitiated
       @display.addGameReport("Inning #{@inning} - #{@side}", "outline")
       @display.addGameReport("First Batter", "nextBatter")
+      @batter = @awayTeam.firstBatter()
+      @display.addGameReport(@batter.name, "nextBatter")
+      console.log("IN GAME ENGINE::makePitch -> Away team = #{JSON.stringify(@awayTeam)}")
+      console.log("IN GAME ENGINE::makePitch -> Home team = #{JSON.stringify(@homeTeam)}")
       @gameInitiated = true
     unless @gameOver
       @atBat.makePitch()
@@ -41,6 +49,16 @@ class @GameEngine
     @display.clearBatter()
     unless @gameFinished()
       @display.addGameReport("Next Batter", "nextBatter")
+    if @side is "Top"
+      @batter = @awayTeam.nextBatter()
+      @display.addGameReport(@batter.name, "nextBatter")
+    else if @homeFirstBatterNotUpYet
+      @batter = @homeTeam.firstBatter()
+      @display.addGameReport(@batter.name, "nextBatter")
+      @homeFirstBatterNotUpYet = false
+    else if @side is "Bottom"
+      @batter = @homeTeam.nextBatter()
+      @display.addGameReport(@batter.name, "nextBatter")
     @atBat = nextBatter
 
 

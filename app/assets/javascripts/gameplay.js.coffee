@@ -1,12 +1,14 @@
 #= require underscore
 
 $(document).ready ->
-  game = new GameEngine()
+  homeTeam = new Team()
+  awayTeam = new Team()
+  game = new GameEngine(homeTeam, awayTeam)
   simulator = new Simulator(game)
 
   $("#start-button").on "click", ->
-    #game.makePitch()
-    simulator.simulateGame()
+    game.makePitch()
+    #simulator.simulateGame()
 
 class @Gameplay
   constructor: ->

@@ -1,3 +1,3 @@
 class @Player
   constructor: ->
-    @name = Faker.Name.findName()
+    @name = Faker.Name.lastName() + " " + Faker.Name.lastName()
