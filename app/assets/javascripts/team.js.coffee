@@ -1,3 +1,8 @@
+$(document).ready ->
+
+  $("#team-button").on "click", ->
+    console.log(gon.team)
+
 class @Team
   constructor: (name) ->
     @name = name

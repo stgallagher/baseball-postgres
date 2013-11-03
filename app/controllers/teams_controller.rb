@@ -1,6 +1,7 @@
 class TeamsController < ApplicationController
   def index
     @teams = Team.all
+    gon.team = Team.find(3).players
   end
 
   def create
