@@ -1,0 +1,8 @@
+%h2 Edit Team
+= form_for :team, url: team_path(@team.id), method: "PUT" do |f|
+  %p
+    = f.label :name
+    %br/
+    = f.text_field :name
+  %p
+    = f.submit

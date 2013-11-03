@@ -1,0 +1,14 @@
+.container
+  %h2 Players
+  %table
+    %tr
+      %th Name
+    - @players.each do |player|
+      %tr
+        %td
+          = player.name
+        %td
+          = link_to 'Edit player', edit_player_path(player.id)
+          = link_to 'Delete player', player_path(player.id), method: "DELETE"
+  = link_to 'New Player', new_player_path
+  = link_to 'Main Menu', root_path

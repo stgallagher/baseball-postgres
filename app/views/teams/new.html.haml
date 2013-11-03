@@ -1,0 +1,8 @@
+%h2 New Team
+= form_for :team, url: teams_path do |f|
+  %p
+    = f.label :name
+    %br/
+    = f.text_field :name
+  %p
+    = f.submit

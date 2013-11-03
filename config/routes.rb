@@ -1,5 +1,8 @@
 BaseballPostgres::Application.routes.draw do
 
+  root to: "main_menu#index"
+  resources :players
+  resources :teams
   get "gameplay", :controller => "gameplay", :action => "gameplay"
 
   # The priority is based upon order of creation: first created -> highest priority.

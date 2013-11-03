@@ -1,0 +1,14 @@
+.container
+  %h2 Teams
+  %table
+    %tr
+      %th Name
+    - @teams.each do |team|
+      %tr
+        %td
+          = team.name
+        %td
+          = link_to 'Edit team', edit_team_path(team.id)
+          = link_to 'Delete team', team_path(team.id), method: "DELETE"
+  = link_to 'New Team', new_team_path
+  = link_to 'Main Menu', root_path
