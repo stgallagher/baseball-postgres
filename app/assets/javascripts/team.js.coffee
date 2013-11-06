@@ -26,3 +26,10 @@ class @Team
         return @players[@currentPlayerIndex += 1]
 
 
+  getTeamInfo: ->
+    a = []
+    $.getJSON "http://localhost:4000/teams/3", { team: 3 }, (data) ->
+      _.each(data.players, (value) ->
+          a.push(_.pick(value, 'name'))
+      )
+      console.log "data = #{JSON.stringify(a)}"

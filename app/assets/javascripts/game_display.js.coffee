@@ -9,7 +9,7 @@ $(document).ready ->
 
 
   $("#start-button").on "click", ->
-    game.initializeBattingOrder()
+    homeTeam.getTeamInfo()
     #game.makePitch()
     #simulator.simulateGame()
 
@@ -23,8 +23,15 @@ class @GameDisplay
     @addGameReport("Game Over", "gameover")
 
   getTeamInfo: ->
-    $.getJSON "http://localhost:4000/teams",{ team: 3 }, (data) ->
+    $.getJSON "http://localhost:4000/teams", { team: 3 }, (data) ->
       console.log data
+
+  battingOrder: (awayPlayers, homePlayers) ->
+    awayBattingLineup = _.map([1..9], (num) -> $("#gamedisplay-away-batter-#{num}-name"))
+    _.each(awayPlayers, (value, key, list) -> awayBattingLineup[key].text(value.name))
+
+    homeBattingLineup = _.map([1..9], (num) -> $("#gamedisplay-home-batter-#{num}-name"))
+    _.each(homePlayers, (value, key, list) -> homeBattingLineup[key].text(value.name))
 
   updateDisplay: (atBat) ->
     unless atBat.balls is 0
