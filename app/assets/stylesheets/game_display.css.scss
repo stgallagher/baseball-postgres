@@ -1,7 +1,7 @@
 .container {
 }
 
-#gameplay-title {
+#gamedisplay-title {
   height: 60px;
   border: solid 1px black;
   text-align: center;
@@ -9,48 +9,67 @@
   margin-top: 50px;
 }
 
-#gameplay-scoreboard {
+#gamedisplay-scoreboard {
   height: 70px;
   padding-left: 60px;
 }
-
-table#gameplay-scoreboard-table {
+table#gamedisplay-scoreboard-table {
   table-layout: fixed;
 }
 
-th.gameplay-scoreboard-team-names  {
+th.gamedisplay-scoreboard-team-names  {
   width: 160px;
   border: solid black 1px;
 }
 
-#gameplay-scoreboard td.gameplay-scoreboard-team-names  {
+#gamedisplay-scoreboard td.gamedisplay-scoreboard-team-names  {
   width: 160px;
   border: solid black 1px;
 }
 
-#gameplay-scoreboard th {
+#gamedisplay-scoreboard th {
   width: 25px;
   text-align: center;
   border: solid black 1px;
 }
 
-#gameplay-scoreboard td {
+#gamedisplay-scoreboard td {
   width: 30px;
   text-align: center;
   border: solid black 1px;
 }
 
 @mixin game-play-height {
-  height: 550px;
+  height: 580px;
 }
 
-#gameplay-away-team {
+table#lineup-table {
+  table-layout: fixed;
+}
+
+.line-up-name {
+  font-size: x-small;
+  width: 160px;
+  text-align: center;
+}
+
+.line-up-position {
+  width: 40px;
+  text-align: center;
+}
+
+.line-up-position {
+  width: 40px;
+  text-align: center;
+}
+
+#gamedisplay-away-team {
   border: solid 1px black;
   padding: 8px;
   @include game-play-height;
 }
 
-#gameplay-baseball-field {
+#gamedisplay-baseball-field {
   background: brown;
   border: solid 1px black;
   margin-right: 5px;
@@ -206,47 +225,47 @@ th.gameplay-scoreboard-team-names  {
   z-index: 3;
 }
 
-#gameplay-home-team {
+#gamedisplay-home-team {
   border: solid 1px black;
   padding: 8px;
   @include game-play-height;
 }
 
-#gameplay-at-bat {
+#gamedisplay-at-bat {
   height: 70px;
   border: solid 1px black;
   padding-top: 4px;
 }
 
-#gameplay-at-bat-balls {
+#gamedisplay-at-bat-balls {
   float: left;
   margin-right: 22px;
 }
 
-#gameplay-at-bat-strikes {
+#gamedisplay-at-bat-strikes {
   float: left;
   margin-right: 10px;
 }
 
-#gameplay-at-bat-out {
+#gamedisplay-at-bat-out {
   float: left;
   margin-right: 23px;
 }
 
-#gameplay-at-bat-ball-indicators {
+#gamedisplay-at-bat-ball-indicators {
 }
 
-#gameplay-at-bat-strike-indicators {
+#gamedisplay-at-bat-strike-indicators {
 }
 
-#gameplay-game-report {
+#gamedisplay-game-report {
   height: 1000px;
   padding-bottom: 200px;
   border: solid 1px black;
   overflow: scroll;
 }
 
-#gameplay-game-report-outline {
+#gamedisplay-game-report-outline {
   margin-top: 30px;
   margin-bottom: 10px;
   padding: 5px;
@@ -256,7 +275,7 @@ th.gameplay-scoreboard-team-names  {
   text-align: center;
 }
 
-#gameplay-game-report-next-batter {
+#gamedisplay-game-report-next-batter {
   padding: 2px;
   width: 170px;
   margin-bottom: 5px;
@@ -265,7 +284,7 @@ th.gameplay-scoreboard-team-names  {
   text-align: center;
 }
 
-#gameplay-game-report-result {
+#gamedisplay-game-report-result {
   padding: 2px;
   width: 170px;
   background-color: lightgrey;
@@ -276,11 +295,11 @@ th.gameplay-scoreboard-team-names  {
   margin-bottom: 10px;
 }
 
-#gameplay-game-report-balls-strikes {
+#gamedisplay-game-report-balls-strikes {
 
 }
 
-#gameplay-game-report-game-over {
+#gamedisplay-game-report-game-over {
   font-size: xx-large;
   font-weight: bold;
   border: 3px black solid;

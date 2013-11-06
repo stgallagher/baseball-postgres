@@ -16,5 +16,5 @@
 //= require bootstrap
 //= require underscore
 //= require Faker
-//= require gameplay
+//= require game_display
 //= require_tree .

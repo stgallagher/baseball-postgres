@@ -1,0 +1,2 @@
+class GameDisplayController < ApplicationController
+end

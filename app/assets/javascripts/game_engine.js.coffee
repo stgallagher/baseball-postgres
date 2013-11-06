@@ -1,14 +1,10 @@
 class @GameEngine
 
-  constructor: (@homeTeam, @awayTeam) ->
+  constructor: (@homeTeam, @awayTeam, @display, @pitcher, @contact, @baseRunners) ->
     @inning = 1
     @side = "Top"
     @score = 0
     @outs = 0
-    @display = new Gameplay()
-    @pitcher = new Pitching()
-    @contact = new Contact()
-    @baseRunners = new BaseRunners()
     @atBat = new AtBat(@pitcher, @contact, @baseRunners, @display)
     @initiateGame()
     @gameInitiated = false
@@ -29,8 +25,6 @@ class @GameEngine
       @display.addGameReport("First Batter", "nextBatter")
       @batter = @awayTeam.firstBatter()
       @display.addGameReport(@batter.name, "nextBatter")
-      console.log("IN GAME ENGINE::makePitch -> Away team = #{JSON.stringify(@awayTeam)}")
-      console.log("IN GAME ENGINE::makePitch -> Home team = #{JSON.stringify(@homeTeam)}")
       @gameInitiated = true
     unless @gameOver
       @atBat.makePitch()

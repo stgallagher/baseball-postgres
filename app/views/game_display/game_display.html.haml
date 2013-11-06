@@ -1,0 +1,195 @@
+.container
+  .row
+    #gamedisplay-title.col-md-12.panel Away Avengers Vs. Home Hercules
+  .row
+    #gamedisplay-scoreboard.col-md-6.col-md-offset-3.panel
+      %table#gamedisplay-scoreboard-table
+        %thead
+          %tr
+            %th.gamedisplay-scoreboard-team-names
+            %th 1
+            %th 2
+            %th 3
+            %th 4
+            %th 5
+            %th 6
+            %th 7
+            %th 8
+            %th 9
+            %th Total
+        %tbody
+          %tr
+            %td.gamedisplay-scoreboard-team-names Away
+            %td#gamedisplay-scoreboard-top-inning-1
+            %td#gamedisplay-scoreboard-top-inning-2
+            %td#gamedisplay-scoreboard-top-inning-3
+            %td#gamedisplay-scoreboard-top-inning-4
+            %td#gamedisplay-scoreboard-top-inning-5
+            %td#gamedisplay-scoreboard-top-inning-6
+            %td#gamedisplay-scoreboard-top-inning-7
+            %td#gamedisplay-scoreboard-top-inning-8
+            %td#gamedisplay-scoreboard-top-inning-9
+            %td#gamedisplay-scoreboard-top-total 0
+          %tr
+            %td.gamedisplay-scoreboard-team-names Home
+            %td#gamedisplay-scoreboard-bottom-inning-1
+            %td#gamedisplay-scoreboard-bottom-inning-2
+            %td#gamedisplay-scoreboard-bottom-inning-3
+            %td#gamedisplay-scoreboard-bottom-inning-4
+            %td#gamedisplay-scoreboard-bottom-inning-5
+            %td#gamedisplay-scoreboard-bottom-inning-6
+            %td#gamedisplay-scoreboard-bottom-inning-7
+            %td#gamedisplay-scoreboard-bottom-inning-8
+            %td#gamedisplay-scoreboard-bottom-inning-9
+            %td#gamedisplay-scoreboard-bottom-total 0
+  .row
+    .col-md-3
+      #gamedisplay-away-team.panel
+        %h4 Batters
+        %table#lineup-table.table
+          %tr
+            %th.line-up-name Name
+            %th.line-up-position Pos.
+            %th.line-up-average Avg.
+          %tr
+            %td.line-up-name#gamedisplay-away-batter-1-name Wilson Smith
+            %td SS
+            %td .333
+          %tr
+            %td.line-up-name#gamedisplay-away-batter-2-name Wilson Smith
+            %td SS
+            %td .333
+          %tr
+            %td.line-up-name#gamedisplay-away-batter-3-name Wilson Smith
+            %td SS
+            %td .333
+          %tr
+            %td.line-up-name#gamedisplay-away-batter-4-name Wilson Smith
+            %td SS
+            %td .333
+          %tr
+            %td.line-up-name#gamedisplay-away-batter-5-name Wilson Smith
+            %td SS
+            %td .333
+          %tr
+            %td.line-up-name#gamedisplay-away-batter-6-name Wilson Smith
+            %td SS
+            %td .333
+          %tr
+            %td.line-up-name#gamedisplay-away-batter-7-name Wilson Smith
+            %td SS
+            %td .333
+          %tr
+            %td.line-up-name#gamedisplay-away-batter-8-name Wilson Smith
+            %td SS
+            %td .333
+          %tr
+            %td.line-up-name#gamedisplay-away-batter-9-name Wilson Smith
+            %td SS
+            %td .333
+        %h4 Pitchers
+        %table.table
+          %tr
+            %th Name
+            %th Strikouts
+            %th ERA
+          %tr
+            %td.line-up-name John Billings
+            %td 3
+            %td 3.45
+          %tr
+            %td.line-up-name John Billings
+            %td 3
+            %td 3.45
+    .col-md-6.panel
+      #gamedisplay-baseball-field.panel
+        #baseball-field
+          #baseball-field-first-base-runner
+          #baseball-field-second-base-runner
+          #baseball-field-third-base-runner
+          #baseball-field-home-base-runner
+          #baseball-field-diamond
+          #baseball-field-pitchers-mound
+          #baseball-field-pitchers-plate
+          #baseball-field-home-base
+          #baseball-field-first-base
+          #baseball-field-second-base
+          #baseball-field-third-base
+          #baseball-field-baseline-right
+          #baseball-field-baseline-left
+    .col-md-3.panel
+      #gamedisplay-home-team.panel
+        %h4 Batters
+        %table.table
+          %tr
+            %th.line-up-name Name
+            %th.line-up-position Pos.
+            %th.line-up-average Avg.
+          %tr
+            %td.line-up-name#gamedisplay-home-batter-1-name Wilson Smith
+            %td SS
+            %td .333
+          %tr
+            %td.line-up-name#gamedisplay-home-batter-2-name Wilson Smith
+            %td SS
+            %td .333
+          %tr
+            %td.line-up-name#gamedisplay-home-batter-3-name Wilson Smith
+            %td SS
+            %td .333
+          %tr
+            %td.line-up-name#gamedisplay-home-batter-4-name Wilson Smith
+            %td SS
+            %td .333
+          %tr
+            %td.line-up-name#gamedisplay-home-batter-5-name Wilson Smith
+            %td SS
+            %td .333
+          %tr
+            %td.line-up-name#gamedisplay-home-batter-6-name Wilson Smith
+            %td SS
+            %td .333
+          %tr
+            %td.line-up-name#gamedisplay-home-batter-7-name Wilson Smith
+            %td SS
+            %td .333
+          %tr
+            %td.line-up-name#gamedisplay-home-batter-8-name Wilson Smith
+            %td SS
+            %td .333
+          %tr
+            %td.line-up-name#gamedisplay-home-batter-9-name Wilson Smith
+            %td SS
+            %td .333
+        %h4 Pitchers
+        %table.table
+          %tr
+            %th Name
+            %th Strikouts
+            %th ERA
+          %tr
+            %td.line-up-name John Billings
+            %td 3
+            %td 3.45
+          %tr
+            %td.line-up-name John Billings
+            %td 3
+            %td 3.45
+  .row
+    #gamedisplay-at-bat.col-md-2.col-md-offset-5.panel
+      %div
+        #gamedisplay-at-bat-balls Ball
+        #gamedisplay-at-bat-ball-indicator1.glyphicon.glyphicon-unchecked
+        #gamedisplay-at-bat-ball-indicator2.glyphicon.glyphicon-unchecked
+        #gamedisplay-at-bat-ball-indicator3.glyphicon.glyphicon-unchecked
+      %div
+        #gamedisplay-at-bat-strikes Strike
+        #gamedisplay-at-bat-strike-indicator1.glyphicon.glyphicon-unchecked
+        #gamedisplay-at-bat-strike-indicator2.glyphicon.glyphicon-unchecked
+      %div
+        #gamedisplay-at-bat-out Out
+        #gamedisplay-at-bat-out-indicator1.glyphicon.glyphicon-unchecked
+        #gamedisplay-at-bat-out-indicator2.glyphicon.glyphicon-unchecked
+  #start-button.btn.btn-primary Start
+  .row
+    #gamedisplay-game-report.col-md-8.col-md-offset-2.panel

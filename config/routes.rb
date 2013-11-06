@@ -3,7 +3,7 @@ BaseballPostgres::Application.routes.draw do
   root to: "main_menu#index"
   resources :players
   resources :teams
-  get "gameplay", :controller => "gameplay", :action => "gameplay"
+  get "game_display", :controller => "game_display", :action => "game_display"
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -1,7 +1,14 @@
 class TeamsController < ApplicationController
+  respond_to :json, :html
+
   def index
     @teams = Team.all
-    gon.team = Team.find(3).players
+    @team = Team.find(3).players
+    respond_with(@team) do |format|
+      format.html
+      format.json { render :json =>  Team.find(params[:team]).players  }
+      format.any  { render :text => "only HTML, XML, and JSON format are supported at the moment." }
+    end
   end
 
   def create
