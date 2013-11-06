@@ -9,7 +9,6 @@ $(document).ready ->
 
 
   $("#start-button").on "click", ->
-    homeTeam.getTeamInfo()
     #game.makePitch()
     #simulator.simulateGame()
 
@@ -21,10 +20,6 @@ class @GameDisplay
   gameFinished: ->
     @reporter.scrollTop(0)
     @addGameReport("Game Over", "gameover")
-
-  getTeamInfo: ->
-    $.getJSON "http://localhost:4000/teams", { team: 3 }, (data) ->
-      console.log data
 
   battingOrder: (awayPlayers, homePlayers) ->
     awayBattingLineup = _.map([1..9], (num) -> $("#gamedisplay-away-batter-#{num}-name"))
