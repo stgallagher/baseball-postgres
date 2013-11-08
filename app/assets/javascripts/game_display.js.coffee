@@ -1,16 +1,10 @@
 #= require underscore
 
 $(document).ready ->
-  homeTeam = new Team()
-  awayTeam = new Team()
-  game = new Game(homeTeam, awayTeam)
-  #simulator = new Simulator(game)
-  #gamedisplay = new GameDisplay()
-
+  game = new Game()
 
   $("#start-button").on "click", ->
-    #game.makePitch()
-    #simulator.simulateGame()
+    game.pitch()
 
 class @GameDisplay
   constructor: ->
@@ -27,6 +21,11 @@ class @GameDisplay
 
     homeBattingLineup = _.map([1..9], (num) -> $("#gamedisplay-home-batter-#{num}-name"))
     _.each(homePlayers, (value, key, list) -> homeBattingLineup[key].text(value.name))
+
+
+  teamsPlaying: (away, home) ->
+    $("#away-team-name").text(away)
+    $("#home-team-name").text(home)
 
   updateDisplay: (atBat) ->
     unless atBat.balls is 0
