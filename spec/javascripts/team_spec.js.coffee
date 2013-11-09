@@ -4,15 +4,12 @@ describe "Team", ->
   tm = null
 
   beforeEach ->
-    tm = new Team("Wildcats")
+    tm = new Team()
     player1 = { name: "Dave" }
     player2 = { name: "Bob" }
     player3 = { name: "Larry" }
     player4 = { name: "Joe" }
     tm.players = [player1, player2, player3, player4]
-
-  it "team name isn't blank", ->
-    expect(tm.name).not.toBe(null)
 
   it "has players", ->
     expect(tm.players).not.toBe(null)

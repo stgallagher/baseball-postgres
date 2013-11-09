@@ -1,12 +1,8 @@
-class @Pitching
+class @Pitching(probabilty)
 
-  PITCH_BALL_PROB = 50
-  PITCH_STRIKE_PROB = 35
-  PITCH_CONTACT_PROB = 100 - PITCH_BALL_PROB - PITCH_STRIKE_PROB
-
-  PITCH_BALL_RANGE = [0, PITCH_BALL_PROB]
-  PITCH_STRIKE_RANGE = [(PITCH_BALL_PROB), PITCH_BALL_PROB + PITCH_STRIKE_PROB]
-  PITCH_CONTACT_RANGE = [(PITCH_BALL_PROB + PITCH_STRIKE_PROB), 100]
+  PITCH_BALL_RANGE = [0, probability.pitchBall]
+  PITCH_STRIKE_RANGE = [(probability.pitchBall), probability.pitchBall + probability.pitchStrike]
+  PITCH_CONTACT_RANGE = [(probability.pitchBall + probability.pitchStrike), 100]
 
   # Pitch
   pitch: ->

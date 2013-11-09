@@ -6,7 +6,7 @@ describe "AtBat", ->
     p = new Pitching()
     c = new Contact()
     br = new BaseRunners()
-    d = new Gameplay()
+    d = new GameDisplay()
     @ab = new AtBat(p, c, br, d)
 
   it "#ballReceived increments ball count", ->
