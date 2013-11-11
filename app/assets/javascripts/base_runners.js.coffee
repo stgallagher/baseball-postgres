@@ -91,5 +91,3 @@ class @BaseRunners
       double:   DOUBLE_AT_BAT_RESULT,
       triple:   TRIPLE_AT_BAT_RESULT,
       homerun:  HOME_RUN_AT_BAT_RESULT
-
-

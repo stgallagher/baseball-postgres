@@ -1,87 +1,52 @@
-class @Probabilities(@batterPower, @batterContact, @pitcher)
+class @Probabilities
 
-  constructor: ->
-    @pitchBall = null
-    @pitchStrike = null
-    @contactFoul = null
-    @contactSingle = null
-    @contactDouble = null
-    @contactTriple = null
-    @contactHomeRun = null
-    @contactPopFlyOut = null
+  constructor: (@batterPower, @batterContact, @pitcher)->
+    @pitchingLevelMapper(@determinePitchLevel())
+    @contactLevelMapper(@batterContact)
 
-  PITCH_BALL_PROB_LEVEL_1 = 30
-  PITCH_STRIKE_PROB_LEVEL_1 = 15
-  PITCH_CONTACT_PROB_LEVEL_1 = 100 - PITCH_BALL_PROB - PITCH_STRIKE_PROB
+  determinePitchLevel: ->
+    batterFactor = @batterContact - 3
+    pitcherFactor = @pitcher - 3
+    level = 5 + pitcherFactor - batterFactor
 
-  PITCH_BALL_PROB_LEVEL_2 = 25
-  PITCH_STRIKE_PROB_LEVEL_2 = 20
-  PITCH_CONTACT_PROB_LEVEL_2 = 100 - PITCH_BALL_PROB - PITCH_STRIKE_PROB
+  pitchingLevelMapper: (level) ->
+    switch level
+      when 1 then @pitchingProb = PITCHING["one"]
+      when 2 then @pitchingProb = PITCHING["two"]
+      when 3 then @pitchingProb = PITCHING["three"]
+      when 4 then @pitchingProb = PITCHING["four"]
+      when 5 then @pitchingProb = PITCHING["five"]
+      when 6 then @pitchingProb = PITCHING["six"]
+      when 7 then @pitchingProb = PITCHING["seven"]
+      when 8 then @pitchingProb = PITCHING["eight"]
+      when 9 then @pitchingProb = PITCHING["nine"]
 
-  PITCH_BALL_PROB_LEVEL_3 = 20
-  PITCH_STRIKE_PROB_LEVEL_3 = 25
-  PITCH_CONTACT_PROB_LEVEL_3 = 100 - PITCH_BALL_PROB - PITCH_STRIKE_PROB
+  contactLevelMapper: (level) ->
+    switch level
+      when 1 then @contactProb = CONTACT["one"]
+      when 2 then @contactProb = CONTACT["two"]
+      when 3 then @contactProb = CONTACT["three"]
+      when 4 then @contactProb = CONTACT["four"]
+      when 5 then @contactProb = CONTACT["five"]
 
-  PITCH_BALL_PROB_LEVEL_4 = 18
-  PITCH_STRIKE_PROB_LEVEL_4 = 35
-  PITCH_CONTACT_PROB_LEVEL_4 = 100 - PITCH_BALL_PROB - PITCH_STRIKE_PROB
+  # Pitch
+  # ---------------------------
+  PITCHING =
+    one:       ball: 30, strike: 15, contact: 55
+    two:       ball: 25, strike: 20, contact: 55
+    three:     ball: 20, strike: 25, contact: 55
+    four:      ball: 18, strike: 35, contact: 47
+    five:      ball: 15, strike: 40, contact: 45
+    six:       ball: 13, strike: 45, contact: 42
+    seven:     ball: 11, strike: 50, contact: 39
+    eight:     ball: 10, strike: 55, contact: 35
+    nine:      ball:  8, strike: 62, contact: 30
 
-  PITCH_BALL_PROB_LEVEL_5 = 15
-  PITCH_STRIKE_PROB_LEVEL_5 = 40
-  PITCH_CONTACT_PROB_LEVEL_5 = 100 - PITCH_BALL_PROB - PITCH_STRIKE_PROB
-
-  PITCH_BALL_PROB_LEVEL_6 = 13
-  PITCH_STRIKE_PROB_LEVEL_6 = 45
-  PITCH_CONTACT_PROB_LEVEL_6 = 100 - PITCH_BALL_PROB - PITCH_STRIKE_PROB
-
-  PITCH_BALL_PROB_LEVEL_7 = 11
-  PITCH_STRIKE_PROB_LEVEL_7 = 50
-  PITCH_CONTACT_PROB_LEVEL_7 = 100 - PITCH_BALL_PROB - PITCH_STRIKE_PROB
-
-  PITCH_BALL_PROB_LEVEL_8 = 10
-  PITCH_STRIKE_PROB_LEVEL_8 = 55
-  PITCH_CONTACT_PROB_LEVEL_8 = 100 - PITCH_BALL_PROB - PITCH_STRIKE_PROB
-
-  PITCH_BALL_PROB_LEVEL_9 = 8
-  PITCH_STRIKE_PROB_LEVEL_9 = 62
-  PITCH_CONTACT_PROB_LEVEL_9 = 100 - PITCH_BALL_PROB - PITCH_STRIKE_PROB
-
-  CONTACT_FOUL_PROB_LEVEL_1 = 35
-  CONTACT_SINGLE_PROB_LEVEL_1 = 5
-  CONTACT_DOUBLE_PROB_LEVEL_1 = 3
-  CONTACT_TRIPLE_PROB_LEVEL_1 = 1
-  CONTACT_HOME_RUN_PROB_LEVEL_1 = 1
-  CONTACT_POP_FLY_OUT_PROB_LEVEL_1 = 30
-  CONTACT_GROUND_BALL_OUT_PROB_LEVEL_1 = 25
-
-  CONTACT_FOUL_PROB_LEVEL_2 = 35
-  CONTACT_SINGLE_PROB_LEVEL_2 = 8
-  CONTACT_DOUBLE_PROB_LEVEL_2 = 5
-  CONTACT_TRIPLE_PROB_LEVEL_2 = 1
-  CONTACT_HOME_RUN_PROB_LEVEL_2 = 4
-  CONTACT_POP_FLY_OUT_PROB_LEVEL_2 = 22
-  CONTACT_GROUND_BALL_OUT_PROB_LEVEL_2 = 23
-
-  CONTACT_FOUL_PROB_LEVEL_3 = 35
-  CONTACT_SINGLE_PROB_LEVEL_3 = 15
-  CONTACT_DOUBLE_PROB_LEVEL_3 = 5
-  CONTACT_TRIPLE_PROB_LEVEL_3 = 1
-  CONTACT_HOME_RUN_PROB_LEVEL_3 = 4
-  CONTACT_POP_FLY_OUT_PROB_LEVEL_3 = 20
-  CONTACT_GROUND_BALL_OUT_PROB_LEVEL_3 = 20
-
-  CONTACT_FOUL_PROB_LEVEL_4 = 35
-  CONTACT_SINGLE_PROB_LEVEL_4 = 20
-  CONTACT_DOUBLE_PROB_LEVEL_4 = 8
-  CONTACT_TRIPLE_PROB_LEVEL_4 = 2
-  CONTACT_HOME_RUN_PROB_LEVEL_4 = 5
-  CONTACT_POP_FLY_OUT_PROB_LEVEL_4 = 15
-  CONTACT_GROUND_BALL_OUT_PROB_LEVEL_4 = 15
-
-  CONTACT_FOUL_PROB_LEVEL_5 = 35
-  CONTACT_SINGLE_PROB_LEVEL_5 = 25
-  CONTACT_DOUBLE_PROB_LEVEL_5 = 10
-  CONTACT_TRIPLE_PROB_LEVEL_5 = 5
-  CONTACT_HOME_RUN_PROB_LEVEL_5 = 10
-  CONTACT_POP_FLY_OUT_PROB_LEVEL_5 = 8
-  CONTACT_GROUND_BALL_OUT_PROB_LEVEL_5 = 7
+  # Contact
+  # ---------------------------
+  CONTACT =
+     one:   foul: 35, single: 5,  double: 3,  triple: 1, homerun: 1,  popflyout: 30, groundout: 25
+     two:   foul: 35, single: 10, double: 5,  triple: 1, homerun: 4,  popflyout: 22, groundout: 23
+     three: foul: 35, single: 15, double: 5,  triple: 1, homerun: 4,  popflyout: 20, groundout: 20
+     four:  foul: 35, single: 20, double: 8,  triple: 2, homerun: 5,  popflyout: 15, groundout: 15
+     five:  foul: 35, single: 25, double: 10, triple: 5, homerun: 10, popflyout: 8,  groundout: 7

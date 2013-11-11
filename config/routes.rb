@@ -1,5 +1,7 @@
 BaseballPostgres::Application.routes.draw do
 
+  resources :player_profiles
+
   root to: "main_menu#index"
   resources :players
   resources :teams

@@ -1,7 +1,7 @@
 #= require underscore
 
 $(document).ready ->
-  game = new Game()
+  game = new Game(1, 3)
 
   $("#start-button").on "click", ->
     game.pitch()

@@ -1,12 +1,20 @@
-class @Contact(probabilty)
+class @Contact
 
-  CONTACT_FOUL_RANGE = [0, probability.contactFoul]
-  CONTACT_SINGLE_RANGE = [probability.contactFoul + 1, probability.contactFoul + probability.contactSingle]
-  CONTACT_DOUBLE_RANGE = [probability.contactFoul + probability.contactSingle + 1, probability.contactFoul + probability.contactSingle + probability.contactDouble]
-  CONTACT_TRIPLE_RANGE = [probability.contactFoul + probability.contactSingle + probability.contactDouble + 1, probability.contactFoul + probability.contactSingle + probability.contactDouble + probability.contactTriple]
-  CONTACT_HOME_RUN_RANGE = [probability.contactFoul + probability.contactSingle + probability.contactDouble + probability.contactTriple + 1, probability.contactFoul + probability.contactSingle + probability.contactDouble + probability.contactTriple + probability.contactHomeRun]
-  CONTACT_POP_FLY_OUT_RANGE = [probability.contactFoul + probability.contactSingle + probability.contactDouble + probability.contactTriple + probability.contactHomeRun, probability.contactFoul + probability.contactSingle + probability.contactDouble + probability.contactTriple + probability.contactHomeRun + probability.contactPopFlyOut]
-  CONTACT_GROUND_BALL_OUT_RANGE = [probability.contactFoul + probability.contactSingle + probability.contactDouble + probability.contactTriple + probability.contactHomeRun + probability.contactPopFlyOut + 1, 100]
+  constructor: (probability) ->
+    @foul = probability.contactProb.foul
+    @single = probability.contactProb.single
+    @double = probability.contactProb.double
+    @triple = probability.contactProb.triple
+    @homerun = probability.contactProb.homerun
+    @popflyout = probability.contactProb.popflyout
+
+  CONTACT_FOUL_RANGE = null
+  CONTACT_SINGLE_RANGE = null
+  CONTACT_DOUBLE_RANGE = null
+  CONTACT_TRIPLE_RANGE = null
+  CONTACT_HOME_RUN_RANGE = null
+  CONTACT_POP_FLY_OUT_RANGE = null
+  CONTACT_GROUND_BALL_OUT_RANGE = null
 
   # Contact
   contact: ->
@@ -34,6 +42,14 @@ class @Contact(probabilty)
     contact >= CONTACT_GROUND_BALL_OUT_RANGE[0] && contact <= CONTACT_GROUND_BALL_OUT_RANGE[1]
 
   contactReceived: (contact) ->
+    CONTACT_FOUL_RANGE = [0, @foul]
+    CONTACT_SINGLE_RANGE = [@foul + 1, @foul + @single]
+    CONTACT_DOUBLE_RANGE = [@foul + @single + 1, @foul + @single + @double]
+    CONTACT_TRIPLE_RANGE = [@foul + @single + @double + 1, @foul + @single + @double + @triple]
+    CONTACT_HOME_RUN_RANGE = [@foul + @single + @double + @triple + 1, @foul + @single + @double + @triple + @homerun]
+    CONTACT_POP_FLY_OUT_RANGE = [@foul + @single + @double + @triple + @homerun, @foul + @single + @double + @triple + @homerun + @popflyout]
+    CONTACT_GROUND_BALL_OUT_RANGE = [@foul + @single + @double + @triple + @homerun + @popflyout + 1, 100]
+
     if @inFoulRange(contact) then return "foul"
     if @inSingleRange(contact) then return "single"
     if @inDoubleRange(contact) then return "double"
@@ -41,3 +57,4 @@ class @Contact(probabilty)
     if @inHomeRunRange(contact) then return "homerun"
     if @inPopFlyOutRange(contact) then return "pop fly out"
     if @inGroundBallOutRange(contact) then return "ground ball out"
+

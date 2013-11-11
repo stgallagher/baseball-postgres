@@ -4,8 +4,9 @@ class @Game
     @homeTeam = new Team()
     @awayTeam = new Team()
     @display  = new GameDisplay()
-    @pitcher  = new Pitching()
-    @contact  = new Contact()
+    pb = new Probabilities(3, 3, 3)
+    @pitcher  = new Pitching(pb)
+    @contact  = new Contact(pb)
     @baseRunners = new BaseRunners()
     @initializeHomeBattingOrder(1, 3)
 

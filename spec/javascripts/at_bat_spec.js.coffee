@@ -3,8 +3,9 @@
 describe "AtBat", ->
 
   beforeEach ->
-    p = new Pitching()
-    c = new Contact()
+    pb = new Probabilities(null, 3, 3)
+    p = new Pitching(pb)
+    c = new Contact(pb)
     br = new BaseRunners()
     d = new GameDisplay()
     @ab = new AtBat(p, c, br, d)

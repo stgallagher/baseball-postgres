@@ -1,17 +1,17 @@
-class @Pitching(probabilty)
+class @Pitching
 
-  PITCH_BALL_RANGE = [0, probability.pitchBall]
-  PITCH_STRIKE_RANGE = [(probability.pitchBall), probability.pitchBall + probability.pitchStrike]
-  PITCH_CONTACT_RANGE = [(probability.pitchBall + probability.pitchStrike), 100]
+  constructor: (probabilty) ->
+    @ball = probabilty.pitchingProb.ball
+    @strike = probabilty.pitchingProb.strike
+
+  PITCH_BALL_RANGE = null
+  PITCH_STRIKE_RANGE = null
+  PITCH_CONTACT_RANGE = null
 
   # Pitch
   pitch: ->
     Math.floor (Math.random() * 100) + 1
 
-  pitchResult: (pitch) ->
-    if @inBallRange(pitch) then return "ball"
-    if @inStrikeRange(pitch) then return "strike"
-    if @inContactRange(pitch) then return "contact"
 
   inBallRange: (pitch) ->
     pitch > PITCH_BALL_RANGE[0] && pitch <= PITCH_BALL_RANGE[1]
@@ -21,3 +21,12 @@ class @Pitching(probabilty)
 
   inContactRange: (pitch) ->
     pitch > PITCH_CONTACT_RANGE[0] && pitch <= PITCH_CONTACT_RANGE[1]
+
+  pitchResult: (pitch) ->
+    PITCH_BALL_RANGE = [0, @ball]
+    PITCH_STRIKE_RANGE = [@ball, @ball + @strike]
+    PITCH_CONTACT_RANGE = [@ball + @strike, 100]
+
+    if @inBallRange(pitch) then return "ball"
+    if @inStrikeRange(pitch) then return "strike"
+    if @inContactRange(pitch) then return "contact"
