@@ -19,7 +19,6 @@ class @Game
       type: 'GET',
       url: "http://localhost:4000/teams/#{homeId}",
       success : (data) =>
-        console.log "DATA = #{JSON.stringify(data)}"
         @populateHomePlayers(data)
         @initializeAwayBattingOrder(awayId)
 
@@ -35,9 +34,9 @@ class @Game
         @display.teamsPlaying(@awayTeam.name, @homeTeam.name)
 
   populateHomePlayers: (data) ->
-    @homeTeam.players = _.map(_.pluck(data.players, "name"), (name) -> new Player(name))
+    @homeTeam.players = _.map(data.players, (player) -> new Player(player.name, player.player_profile))
     @homeTeam.name = data.name
 
   populateAwayPlayers: (data) ->
-    @awayTeam.players = _.map(_.pluck(data.players, "name"), (name) -> new Player(name))
+    @awayTeam.players = _.map(data.players, (player) -> new Player(player.name, player.player_profile))
     @awayTeam.name = data.name

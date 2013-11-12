@@ -1,3 +1,4 @@
 class @Player
-  constructor: (name) ->
+  constructor: (name, profile) ->
     @name = name
+    @profile = profile
