@@ -19,6 +19,7 @@ class @Game
       type: 'GET',
       url: "http://localhost:4000/teams/#{homeId}",
       success : (data) =>
+        console.log "DATA = #{JSON.stringify(data)}"
         @populateHomePlayers(data)
         @initializeAwayBattingOrder(awayId)
 

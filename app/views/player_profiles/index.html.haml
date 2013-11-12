@@ -1,0 +1,20 @@
+.container
+  %h2 Profiles
+  %table
+    %tr
+      %th Power
+      %th Contact
+      %th Pitching
+    - @profiles.each do |profile|
+      %tr
+        %td
+          = profile.batting_power
+        %td
+          = profile.batting_contact
+        %td
+          = profile.pitching
+        %td
+          = link_to 'Edit profile', edit_player_profile_path(profile.id)
+          = link_to 'Delete profile', player_profile_path(profile.id), method: "DELETE"
+  = link_to 'New Player', new_profile_path
+  = link_to 'Main Menu', root_path

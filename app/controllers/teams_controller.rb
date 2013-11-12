@@ -29,7 +29,7 @@ class TeamsController < ApplicationController
     @team = Team.find(params[:id])
     respond_with(@team) do |format|
       format.html
-      format.json { render :json => @team.to_json({:include => :players}) }
+      format.json { render :json => @team.to_json({:include => { :players => {:include => :player_profile }}}) }
       format.any  { render :text => "only HTML and JSON format are supported at the moment." }
     end
   end

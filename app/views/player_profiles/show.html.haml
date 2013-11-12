@@ -1,0 +1,11 @@
+%h2 Profile
+%p
+  Batting - Contact:
+  #{@profile.batting_contact}
+%p
+  Batting - Power:
+  #{@profile.batting_power}
+%p
+  Pitching:
+  #{@profile.pitching}
+= link_to 'Back to list of profiles', player_profile_path

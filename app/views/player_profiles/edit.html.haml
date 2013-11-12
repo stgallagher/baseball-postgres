@@ -1,0 +1,16 @@
+%h2 Edit Profile
+= form_for :player_profile, url: player_profiles_path(@profile.id), method: "PUT" do |f|
+  %p
+    = f.label :batting_power
+    %br/
+    = f.text_field :batting_power
+  %p
+    = f.label :batting_contact
+    %br/
+    = f.text_field :batting_contact
+  %p
+    = f.label :pitching
+    %br/
+    = f.text_field :pitching
+  %p
+    = f.submit
