@@ -5,7 +5,7 @@ class @GameEngine
     @side = "Top"
     @score = 0
     @outs = 0
-    @atBat = new AtBat(@pitcher, @contact, @baseRunners, @display)
+    @atBat = null
     @initiateGame()
     @gameInitiated = false
     @gameOver = false
@@ -23,8 +23,10 @@ class @GameEngine
     unless @gameInitiated
       @display.addGameReport("Inning #{@inning} - #{@side}", "outline")
       @display.addGameReport("First Batter", "nextBatter")
-      @batter = @awayTeam.firstBatter()
-      @display.addGameReport(@batter.name, "nextBatter")
+      @pitcher.newPitcher(@awayTeam.pitcher())
+      @contact.newBatter(@awayTeam.firstBatter())
+      @atBat = new AtBat(@pitcher, @contact, @baseRunners, @display)
+      @display.addGameReport(@awayTeam.firstBatter().name, "nextBatter")
       @gameInitiated = true
     unless @gameOver
       @atBat.makePitch()
@@ -37,7 +39,15 @@ class @GameEngine
       nextBatter = @batterOut()
     else
       @batterHits()
-      nextBatter = new AtBat(@pitcher, @contact, @baseRunners, @display, @atBat.baseOccupancy)
+      if @side is "Top"
+        @pitcher.newPitcher(@awayTeam.pitcher())
+        @contact.newBatter(@awayTeam.nextBatter())
+        nextBatter = new AtBat(@pitcher, @contact, @baseRunners, @display, @atBat.baseOccupancy)
+      else if @side is "Bottom"
+        @batter = @homeTeam.nextBatter()
+        @pitcher.newPitcher(@homeTeam.pitcher())
+        @contact.newBatter(@homeTeam.nextBatter())
+        nextBatter = new AtBat(@pitcher, @contact, @baseRunners, @display, @atBat.baseOccupancy)
     @display.clearBatter()
     unless @gameFinished()
       @display.addGameReport("Next Batter", "nextBatter")
@@ -51,6 +61,7 @@ class @GameEngine
     else if @side is "Bottom"
       @batter = @homeTeam.nextBatter()
       @display.addGameReport(@batter.name, "nextBatter")
+    console.log "IN GAME_ENGINE::nextBatter -> nextBatter = #{JSON.stringify(nextBatter)}"
     @atBat = nextBatter
 
 
@@ -60,9 +71,23 @@ class @GameEngine
     if @outs is 3
       @retireSide()
       @display.clearAll()
-      return new AtBat(@pitcher, @contact, @baseRunners, @display)
+      if @side is "Top"
+        @pitcher.newPitcher(@awayTeam.pitcher())
+        @contact.newBatter(@awayTeam.nextBatter())
+        return new AtBat(@pitcher, @contact, @baseRunners, @display)
+      else if @side is "Bottom"
+        @pitcher.newPitcher(@homeTeam.pitcher())
+        @contact.newBatter(@homeTeam.nextBatter())
+        return new AtBat(@pitcher, @contact, @baseRunners, @display)
     else
-      return new AtBat(@pitcher, @contact, @baseRunners, @display, @atBat.baseOccupancy)
+      if @side is "Top"
+        @pitcher.newPitcher(@awayTeam.pitcher())
+        @contact.newBatter(@awayTeam.nextBatter())
+        return new AtBat(@pitcher, @contact, @baseRunners, @display, @atBat.baseOccupancy)
+      else if @side is "Bottom"
+        @pitcher.newPitcher(@homeTeam.pitcher())
+        @contact.newBatter(@homeTeam.nextBatter())
+        return new AtBat(@pitcher, @contact, @baseRunners, @display, @atBat.baseOccupancy)
 
   batterHits: ->
     @score += @atBat.baseOccupancy.addedScore

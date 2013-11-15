@@ -1,17 +1,23 @@
 class @Pitching
 
-  constructor: (probabilty) ->
-    @ball = probabilty.pitchingProb.ball
-    @strike = probabilty.pitchingProb.strike
+  constructor: () ->
+    @ball = null
+    @strike = null
 
   PITCH_BALL_RANGE = null
   PITCH_STRIKE_RANGE = null
   PITCH_CONTACT_RANGE = null
 
-  # Pitch
+  makePitch: ->
+    @pitchResult(@pitch())
+
   pitch: ->
     Math.floor (Math.random() * 100) + 1
 
+  newPitcher: (player) ->
+    console.log "IN PITCHING::newPitcher -> player = #{JSON.stringify(player)}"
+    @ball = player.prob.pitchingProb.ball
+    @strike = player.prob.pitchingProb.strike
 
   inBallRange: (pitch) ->
     pitch > PITCH_BALL_RANGE[0] && pitch <= PITCH_BALL_RANGE[1]

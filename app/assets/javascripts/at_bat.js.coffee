@@ -36,7 +36,7 @@ class @AtBat
         @complete = contact
 
   makePitch: ->
-    @atbat(@pitcher.pitchResult(@pitcher.pitch()))
+    @atbat(@pitcher.makePitch())
 
   ballReceived: ->
     @balls += 1

@@ -4,9 +4,8 @@ class @Game
     @homeTeam = new Team()
     @awayTeam = new Team()
     @display  = new GameDisplay()
-    pb = new Probabilities(3, 3, 3)
-    @pitcher  = new Pitching(pb)
-    @contact  = new Contact(pb)
+    @pitcher  = new Pitching()
+    @contact  = new Contact()
     @baseRunners = new BaseRunners()
     @initializeHomeBattingOrder(1, 3)
 
@@ -34,9 +33,9 @@ class @Game
         @display.teamsPlaying(@awayTeam.name, @homeTeam.name)
 
   populateHomePlayers: (data) ->
-    @homeTeam.players = _.map(data.players, (player) -> new Player(player.name, player.player_profile))
+    @homeTeam.players = _.map(data.players, (player) -> new Player(player.name, player.position, player.player_profile))
     @homeTeam.name = data.name
 
   populateAwayPlayers: (data) ->
-    @awayTeam.players = _.map(data.players, (player) -> new Player(player.name, player.player_profile))
+    @awayTeam.players = _.map(data.players, (player) -> new Player(player.name, player.position, player.player_profile))
     @awayTeam.name = data.name

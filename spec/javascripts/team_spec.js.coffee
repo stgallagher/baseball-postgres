@@ -5,10 +5,10 @@ describe "Team", ->
 
   beforeEach ->
     tm = new Team()
-    player1 = { name: "Dave" }
-    player2 = { name: "Bob" }
-    player3 = { name: "Larry" }
-    player4 = { name: "Joe" }
+    player1 = { name: "Dave",   position: "C"  }
+    player2 = { name: "Bob",    position: "LF"  }
+    player3 = { name: "Larry",  position: "P" }
+    player4 = { name: "Joe",    position: "1B"  }
     tm.players = [player1, player2, player3, player4]
 
   it "has players", ->
@@ -22,3 +22,8 @@ describe "Team", ->
     tm.currentPlayerIndex = 3
     batter = tm.nextBatter()
     expect(batter.name).toEqual("Dave")
+
+  it "#pitcher: returns pitcher", ->
+    pitcher = tm.pitcher()
+    console.log "IN TEAM_SPEC::pitcher -> #{JSON.stringify(tm.pitcher())}"
+    expect(pitcher.name).toEqual("Larry")

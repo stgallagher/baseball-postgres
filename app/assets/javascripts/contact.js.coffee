@@ -1,12 +1,12 @@
 class @Contact
 
-  constructor: (probability) ->
-    @foul = probability.contactProb.foul
-    @single = probability.contactProb.single
-    @double = probability.contactProb.double
-    @triple = probability.contactProb.triple
-    @homerun = probability.contactProb.homerun
-    @popflyout = probability.contactProb.popflyout
+  constructor: () ->
+    @foul = null
+    @single = null
+    @double = null
+    @triple = null
+    @homerun = null
+    @popflyout == null
 
   CONTACT_FOUL_RANGE = null
   CONTACT_SINGLE_RANGE = null
@@ -19,6 +19,14 @@ class @Contact
   # Contact
   contact: ->
     Math.floor (Math.random() * 100) + 1
+
+  newBatter: (player) ->
+    @foul = player.prob.contactProb.foul
+    @single = player.prob.contactProb.single
+    @double = player.prob.contactProb.double
+    @triple = player.prob.contactProb.triple
+    @homerun = player.prob.contactProb.homerun
+    @popflyout = player.prob.contactProb.popflyout
 
   inFoulRange: (contact) ->
     contact >= CONTACT_FOUL_RANGE[0] && contact <= CONTACT_FOUL_RANGE[1]

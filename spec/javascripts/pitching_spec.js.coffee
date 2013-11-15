@@ -4,8 +4,9 @@ describe "Pitching", ->
   pt = null
 
   beforeEach ->
-    pb = new Probabilities(null, 3, 3)
-    pt = new Pitching(pb)
+    pt = new Pitching()
+    pt.ball = 15
+    pt.strike = 40
 
   it "returns ball if the pitch is in the ball range", ->
     expect(pt.pitchResult(15)).toBe("ball")

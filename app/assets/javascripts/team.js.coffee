@@ -9,6 +9,9 @@ class @Team
   firstBatter: ->
     @players[0]
 
+  pitcher: ->
+   _.detect(@players, (player) -> player.position is "P")
+
   nextBatter: ->
     if @currentPlayerIndex + 1 is @players.length
       @currentPlayerIndex = 0
