@@ -5,12 +5,7 @@ class @GameEngine
     @side = "Top"
     @score = 0
     @outs = 0
-    @atBat = null
-    @gameInitiated = false
     @gameOver = false
-    @batter = null
-    @pitcher = null
-    @homeFirstBatterNotUpYet = true
     @display.game = this
     @display.startGame()
     @nextAtBat()
