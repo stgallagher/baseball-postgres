@@ -20,13 +20,13 @@ class @Contact
   contact: ->
     Math.floor (Math.random() * 100) + 1
 
-  newBatter: (player) ->
-    @foul = player.prob.contactProb.foul
-    @single = player.prob.contactProb.single
-    @double = player.prob.contactProb.double
-    @triple = player.prob.contactProb.triple
-    @homerun = player.prob.contactProb.homerun
-    @popflyout = player.prob.contactProb.popflyout
+  newBatter: (atbat) ->
+    @foul = atbat.contactProb.foul
+    @single = atbat.contactProb.single
+    @double = atbat.contactProb.double
+    @triple = atbat.contactProb.triple
+    @homerun = atbat.contactProb.homerun
+    @popflyout = atbat.contactProb.popflyout
 
   inFoulRange: (contact) ->
     contact >= CONTACT_FOUL_RANGE[0] && contact <= CONTACT_FOUL_RANGE[1]

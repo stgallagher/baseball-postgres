@@ -3,7 +3,3 @@ class @Player
     @name = name
     @position = position
     @profile = profile
-    @prob = @playerProbability()
-
-  playerProbability: () ->
-    new Probabilities(@profile.batting_power, @profile.batting_contact, @profile.pitching)

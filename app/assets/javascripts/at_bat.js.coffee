@@ -1,5 +1,5 @@
 class @AtBat
-  constructor: (@pitcher, @contact, @baseRunner, @display, @baseOccupancy) ->
+  constructor: (@pitching, @contact, @baseRunner, @display, @baseOccupancy, @prob) ->
     @balls = 0
     @strikes = 0
     @complete = null
@@ -36,7 +36,7 @@ class @AtBat
         @complete = contact
 
   makePitch: ->
-    @atbat(@pitcher.makePitch())
+    @atbat(@pitching.makePitch())
 
   ballReceived: ->
     @balls += 1
@@ -56,3 +56,6 @@ class @AtBat
       @complete = "Strikeout"
     else
       @complete = null
+
+  clearBases: ->
+    @baseOccupancy = @baseRunner.basesEmpty()

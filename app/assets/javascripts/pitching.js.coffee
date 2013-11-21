@@ -14,10 +14,9 @@ class @Pitching
   pitch: ->
     Math.floor (Math.random() * 100) + 1
 
-  newPitcher: (player) ->
-    console.log "IN PITCHING::newPitcher -> player = #{JSON.stringify(player)}"
-    @ball = player.prob.pitchingProb.ball
-    @strike = player.prob.pitchingProb.strike
+  newPitcher: (atbat) ->
+    @ball = atbat.pitchingProb.ball
+    @strike = atbat.pitchingProb.strike
 
   inBallRange: (pitch) ->
     pitch > PITCH_BALL_RANGE[0] && pitch <= PITCH_BALL_RANGE[1]

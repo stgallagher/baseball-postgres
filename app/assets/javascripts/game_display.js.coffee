@@ -10,6 +10,21 @@ class @GameDisplay
   constructor: ->
     @reporter = $("#gamedisplay-game-report")
     @height = $("#gamedisplay-game-report").height()
+    @game = null
+
+  testMessage: ->
+    @reporter.append "The away team name is #{@game.awayTeam.name}"
+
+  startGame: ->
+    @addGameReport("Play ball", "heading")
+    @inning()
+
+  inning: ->
+    @addGameReport("Inning #{@game.inning} - #{@game.side}", "outline")
+
+  nextBatter: ->
+    @addGameReport("Next Batter", "nextBatter")
+    @addGameReport(@game.batter.name, "nextBatter")
 
   gameFinished: ->
     @reporter.scrollTop(0)

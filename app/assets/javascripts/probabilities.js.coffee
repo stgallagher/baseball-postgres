@@ -1,8 +1,12 @@
 class @Probabilities
 
-  constructor: (@batterPower, @batterContact, @pitcher)->
+  newProbabilities: (power, contact, pitching) ->
+    @batterPower = power
+    @batterContact = contact
+    @pitcher = pitching
     @pitchingLevelMapper(@determinePitchLevel())
     @contactLevelMapper(@batterContact)
+
 
   determinePitchLevel: ->
     batterFactor = @batterContact - 3

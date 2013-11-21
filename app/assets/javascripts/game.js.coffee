@@ -7,6 +7,7 @@ class @Game
     @pitcher  = new Pitching()
     @contact  = new Contact()
     @baseRunners = new BaseRunners()
+    @prob = new Probabilities()
     @initializeHomeBattingOrder(1, 3)
 
   pitch: ->
@@ -28,7 +29,7 @@ class @Game
       url: "http://localhost:4000/teams/#{awayId}",
       success : (data) =>
         @populateAwayPlayers(data)
-        @gameEngine  = new GameEngine(@homeTeam, @awayTeam, @display, @pitcher, @contact, @baseRunners)
+        @gameEngine  = new GameEngine(@homeTeam, @awayTeam, @display, @pitcher, @contact, @baseRunners, @prob)
         @display.battingOrder(@awayTeam.players, @homeTeam.players)
         @display.teamsPlaying(@awayTeam.name, @homeTeam.name)
 
