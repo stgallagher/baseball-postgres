@@ -31,6 +31,7 @@ class @Game
         @populateAwayPlayers(data)
         @gameEngine  = new GameEngine(@homeTeam, @awayTeam, @display, @pitcher, @contact, @baseRunners, @prob)
         @display.battingOrder(@awayTeam.players, @homeTeam.players)
+        @display.pitchers(@awayTeam.pitcher(), @homeTeam.pitcher())
         @display.teamsPlaying(@awayTeam.name, @homeTeam.name)
 
   populateHomePlayers: (data) ->

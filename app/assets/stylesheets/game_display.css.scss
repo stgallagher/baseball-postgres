@@ -270,7 +270,7 @@ table#lineup-table {
 }
 
 #gamedisplay-game-report {
-  height: 1000px;
+  height: 500px;
   padding-bottom: 200px;
   border: solid 1px black;
   overflow: scroll;
@@ -317,4 +317,13 @@ table#lineup-table {
   text-align: center;
   margin: 20px;
   width: 250px;
+}
+.gamedisplay-current-batter {
+  background-color: yellow;
+  color: darkblue;
+}
+
+.gamedisplay-current-pitcher {
+  background-color: orange;
+  color: darkblue;
 }

@@ -10,14 +10,18 @@ class @GameDisplay
   constructor: ->
     @reporter = $("#gamedisplay-game-report")
     @height = $("#gamedisplay-game-report").height()
-    @game = null
+    @gameStarted = false
+    @addGameReport("Play ball", "heading")
 
   testMessage: ->
     @reporter.append "The away team name is #{@game.awayTeam.name}"
 
   startGame: ->
-    @addGameReport("Play ball", "heading")
-    @inning()
+    unless @gameStarted
+      @inning()
+      @pitcher()
+      @nextBatter()
+      @gameStarted = true
 
   inning: ->
     @addGameReport("Inning #{@game.inning} - #{@game.side}", "outline")
@@ -25,18 +29,38 @@ class @GameDisplay
   nextBatter: ->
     @addGameReport("Next Batter", "nextBatter")
     @addGameReport(@game.batter.name, "nextBatter")
+    $("td:contains(#{@lastBatterName})").removeClass("gamedisplay-current-batter")
+    $("td:contains(#{@game.batter.name})").addClass("gamedisplay-current-batter")
+    @lastBatterName = @game.batter.name
 
   gameFinished: ->
     @reporter.scrollTop(0)
     @addGameReport("Game Over", "gameover")
 
   battingOrder: (awayPlayers, homePlayers) ->
-    awayBattingLineup = _.map([1..9], (num) -> $("#gamedisplay-away-batter-#{num}-name"))
-    _.each(awayPlayers, (value, key, list) -> awayBattingLineup[key].text(value.name))
+    awayBattingLineupNames = _.map([1..9], (num) -> $("#gamedisplay-away-batter-#{num}-name"))
+    _.each(awayPlayers, (value, key, list) -> awayBattingLineupNames[key].text(value.name))
 
-    homeBattingLineup = _.map([1..9], (num) -> $("#gamedisplay-home-batter-#{num}-name"))
-    _.each(homePlayers, (value, key, list) -> homeBattingLineup[key].text(value.name))
+    awayBattingLineupPositions = _.map([1..9], (num) -> $("#gamedisplay-away-batter-#{num}-position"))
+    _.each(awayPlayers, (value, key, list) -> awayBattingLineupPositions[key].text(value.position))
 
+    homeBattingLineupNames = _.map([1..9], (num) -> $("#gamedisplay-home-batter-#{num}-name"))
+    _.each(homePlayers, (value, key, list) -> homeBattingLineupNames[key].text(value.name))
+
+    homeBattingLineupPositions = _.map([1..9], (num) -> $("#gamedisplay-home-batter-#{num}-position"))
+    _.each(homePlayers, (value, key, list) -> homeBattingLineupPositions[key].text(value.position))
+
+  pitcher: ->
+    if @game.side is "Top"
+      $("#gamedisplay-away-pitcher-name").removeClass("gamedisplay-current-pitcher")
+      $("#gamedisplay-home-pitcher-name").addClass("gamedisplay-current-pitcher")
+    else if @game.side is "Bottom"
+      $("#gamedisplay-home-pitcher-name").removeClass("gamedisplay-current-pitcher")
+      $("#gamedisplay-away-pitcher-name").addClass("gamedisplay-current-pitcher")
+
+  pitchers:(awayPitcher, homePitcher) ->
+    $("#gamedisplay-away-pitcher-name").text(awayPitcher.name)
+    $("#gamedisplay-home-pitcher-name").text(homePitcher.name)
 
   teamsPlaying: (away, home) ->
     $("#away-team-name").text(away)
@@ -54,6 +78,7 @@ class @GameDisplay
     @updateBaseOccupancy(atBat.baseOccupancy)
     if atBat.complete and (atBat.complete isnt /out/.test(atBat.complete))
       @addGameReport(@capitaliseFirstLetter(atBat.complete), "result")
+    @pitcher()
 
   updateOuts: ->
     @addOut()

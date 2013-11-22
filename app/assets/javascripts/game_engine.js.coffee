@@ -7,9 +7,7 @@ class @GameEngine
     @outs = 0
     @gameOver = false
     @display.game = this
-    @display.startGame()
     @nextAtBat()
-    @display.nextBatter()
 
 
   finishGame: ->
@@ -17,6 +15,7 @@ class @GameEngine
     @display.gameFinished()
 
   makePitch: ->
+    @display.startGame()
     unless @gameOver
       if @atBat.complete
         @nextBatter()
@@ -32,8 +31,6 @@ class @GameEngine
       @batterHits()
       @nextAtBat()
     @display.clearBatter()
-    #unless @gameFinished()
-    #  @display.nextBatter()
 
   batterOut: ->
     @outs += 1
