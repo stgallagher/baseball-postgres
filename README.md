@@ -1,16 +1,13 @@
-baseball-postgres
-=================
+#Baseball League simulation
 
-Baseball League simulation
+### Main
+- Front-end(game and interface) : Javascript (as CoffeeScript) with jQuery functions
+- Application Framework : Rails
+- Back-end (relational database) : PostgreSQL
 
-# Main
-Front-end(game and interface) : Javascript (as CoffeeScript) with jQuery functions
-Application Framework : Rails
-Back-end (relational database) : PostgreSQL
-
-#Other:
+### Other:
 ---------
-HTML templating : HAML
-CSS : SASS
-Javascript Testing : Jasmine with Teaspoon as test runner
-Ruby Testing : RSpec
+- HTML templating : HAML
+- CSS : SASS
+- Javascript Testing : Jasmine with Teaspoon as test runner
+- Ruby Testing : RSpec
