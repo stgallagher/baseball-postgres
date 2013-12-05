@@ -1,12 +1,14 @@
 class @GameEngine
 
-  constructor: (@homeTeam, @awayTeam, @display, @pitching, @contact, @baseRunners, @prob) ->
+  constructor: (@homeTeam, @awayTeam, @display, @pitching, @contact, @baseRunners, @prob, @history) ->
     @inning = 1
     @side = "Top"
     @score = 0
     @outs = 0
     @gameOver = false
+    @result = null
     @display.game = this
+    @history.game = this
     @nextAtBat()
 
 
@@ -18,6 +20,7 @@ class @GameEngine
     @display.startGame()
     unless @gameOver
       if @atBat.complete
+        @result = @atBat.complete
         @nextBatter()
         @display.nextBatter()
       @atBat.makePitch()
@@ -27,8 +30,10 @@ class @GameEngine
   nextBatter: ->
     if @atBat.isOut
       @batterOut()
+      @history.recordAtBat()
     else
       @batterHits()
+      @history.recordAtBat()
       @nextAtBat()
     @display.clearBatter()
 

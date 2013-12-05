@@ -29,7 +29,8 @@ class @Game
       url: "http://localhost:4000/teams/#{awayId}",
       success : (data) =>
         @populateAwayPlayers(data)
-        @gameEngine  = new GameEngine(@homeTeam, @awayTeam, @display, @pitcher, @contact, @baseRunners, @prob)
+        @history = new GameHistory(@homeTeam, @awayTeam)
+        @gameEngine  = new GameEngine(@homeTeam, @awayTeam, @display, @pitcher, @contact, @baseRunners, @prob, @history)
         @display.battingOrder(@awayTeam.players, @homeTeam.players)
         @display.pitchers(@awayTeam.pitcher(), @homeTeam.pitcher())
         @display.teamsPlaying(@awayTeam.name, @homeTeam.name)
