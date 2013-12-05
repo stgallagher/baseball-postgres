@@ -30,7 +30,6 @@ class @GameEngine
   nextBatter: ->
     if @atBat.isOut
       @batterOut()
-      @history.recordAtBat()
     else
       @batterHits()
       @history.recordAtBat()
@@ -41,10 +40,12 @@ class @GameEngine
     @outs += 1
     @display.updateOuts()
     if @outs is 3
+      @history.recordAtBat()
       @retireSide()
       @display.clearAll()
       @nextAtBat()
     else
+      @history.recordAtBat()
       @nextAtBat()
 
   batterHits: ->

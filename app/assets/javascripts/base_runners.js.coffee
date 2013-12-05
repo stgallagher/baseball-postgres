@@ -48,7 +48,7 @@ class @BaseRunners
   SINGLE_AT_BAT_RESULT =
       basesLoaded:    first: "manned",  second: "manned", third: "manned",  addedScore: 1
       firstAndSecond: first: "manned",  second: "manned", third: "manned",  addedScore: 0
-      firstAndThird:  first: "manned",  second: "empty",  third: "empty",   addedScore: 1
+      firstAndThird:  first: "manned",  second: "manned",  third: "empty",   addedScore: 1
       secondAndThird: first: "manned",  second: "empty",  third: "manned",  addedScore: 1
       first:          first: "manned",  second: "manned", third: "empty",   addedScore: 0
       second:         first: "manned",  second: "empty",  third: "manned",  addedScore: 0
